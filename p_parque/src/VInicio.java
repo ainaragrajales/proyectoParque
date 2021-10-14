@@ -1,5 +1,9 @@
+import Models.*;
+import MySQL.Carga;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class VInicio {
 
@@ -12,21 +16,26 @@ public class VInicio {
     public static boolean ventanaAbierta = false;
 
     // Cargo en ArrayList las tablas de espectaculos, clientes y empleados y le paso los datos que recojo de la Base de datos
-    /*private ArrayList<Espectaculo> espectaculos = new ArrayList<>();
+    ArrayList<Espectaculo> espectaculos = new ArrayList<>();
     ArrayList<Empleado> empleados = new ArrayList<>();
-    ArrayList<Cliente> clientes = new ArrayList<>();
+   final static ArrayList<Cliente> clientes = new Carga().listaClientes();
     ArrayList<Espectaculos_Cliente> espectaculosClientes = new ArrayList<>();
     ArrayList<Espectaculos_Empleado> espectaculosEmpleados = new ArrayList<>();
-*/
+
 
     public VInicio() {
-        /*espectaculos = new Carga().listaEspectaculos();
+
+
+
+        espectaculos = new Carga().listaEspectaculos();
         empleados = new Carga().listaEmpleados();
-        clientes = new Carga().listaClientes();
+        //clientes = new Carga().listaClientes();
         espectaculosClientes = new Carga().listaClientesEspectaculo();
         espectaculosEmpleados = new Carga().listaEmpleadosEspectaculo();
-*/
+
         // Hago una comprobación, que se ha accedido a la base de datos
+
+
 
         /*System.out.println();
         System.out.println("Datos del arrayList espectáculos, recogidos de la base de datos:\n");
@@ -35,12 +44,15 @@ public class VInicio {
             System.out.format("%-5d%-20s%-10d%-50s%-20s%-12s%-12s%n", e.getNo_Espect(), e.getNombreEspec(), e.getAforo(), e.getDescripcion(), e.getLugar(), e.getFecha_Espec(), e.getHorario_espec());
         }*/
 
+
+        //Mostrar en consola
+
         // CARGA DE DATOS DE LOS CLIENTES DE UN ESPECTACULO  Y LOS EMPLEADOS DE UN ESPECTACULO
 
         // Aquí hay que cargar los clientes que tiene  cada espectaculo:
         // Voy recorriendo los espectaculos
 
-        /*System.out.println("\n**************** CARGA DE DATOS DE LOS CLIENTES POR ESPECTACULO *****************\n");
+        System.out.println("\n**************** CARGA DE DATOS DE LOS CLIENTES POR ESPECTACULO *****************\n");
 
         for (int i = 0; i < espectaculos.size(); i++) {
             System.out.println("Posicion(i): " + i);
@@ -153,13 +165,13 @@ public class VInicio {
         for (Espectaculos_Empleado ep : espectaculosEmpleados) {
             System.out.format("%-5d%-20s%-5d%n", ep.getIdEspecEmp(), ep.getEmpleado(), ep.getEspectaculo());
         }
-*/
+
         espectaculosButton.addActionListener(e -> {
-            /*if (!ventanaAbierta) {
+            if (!ventanaAbierta) {
                 JFrame frame = new JFrame("Parque My Sql");
-                VPrincipal vp = new VPrincipal();
-                frame.setContentPane(vp.getVPanelPrincipal());
-                vp.cargaDatos();
+                //VPrincipal_MySQL vp = new VPrincipal_MySQL(clientes);
+                frame.setContentPane((new VPrincipal_MySQL(clientes)).VPanelPrincipal);
+                //(new VPrincipal_MySQL(clientes)).cargaDatos();
                 frame.setMinimumSize(new Dimension(1200, 600)); // Lo ajusto a un tamaño para que se vea bien
                 frame.setLocationRelativeTo(null); // Saca la ventana al centro
                 frame.pack();
@@ -167,8 +179,8 @@ public class VInicio {
                 ventanaAbierta = true;
             } else {
                 JOptionPane.showMessageDialog(null, "La ventana Principal ya esta abierta!!!");
-            }*/
-            abrirVPrincipal();
+            }
+           // abrirVPrincipal();
         });
     }
 
@@ -226,7 +238,7 @@ public class VInicio {
 
     public void abrirVPrincipal() {
         JFrame frame = new JFrame("Gestión Parques");
-        VPrincipal_MySQL vp = new VPrincipal_MySQL();
+        VPrincipal_MySQL vp = new VPrincipal_MySQL(clientes);
         frame.setContentPane(vp.getVPanelPrincipal());
         /*vp.CargaCLientes();
         vp.CargaEmples();

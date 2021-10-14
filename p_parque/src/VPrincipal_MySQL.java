@@ -2,12 +2,14 @@ import Models.*;
 import MySQL.Carga;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class VPrincipal_MySQL {
-    private JPanel VPanelPrincipal;
+    public JPanel VPanelPrincipal;
     private JTabbedPane tabbedPane1;
     private JPanel PestanaEspectaculos;
     private JList listaEspectaculos;
@@ -67,7 +69,7 @@ public class VPrincipal_MySQL {
     private JTextField et_CargoEmpl;
     private JButton bt_GuardarEmple;
     private JPanel PanelEspectaculos;
-    private JList<Espectaculo> listadoClientesEspectaculos;
+    private JList<Cliente> listadoClientesEspectaculos;
     private JButton BotonAnadirEspec;
     private JButton BotonBorrarEspec;
     private JButton BotonModificarEspec;
@@ -75,6 +77,7 @@ public class VPrincipal_MySQL {
     private JList listaEmpleadosEspectaculos;
     private JScrollPane resultadoEmpleadosEspectaculos;
 
+    private JTable tabla;
 
     private ArrayList<Espectaculo> espectaculos = new ArrayList<>();
     private ArrayList<Cliente> clientes = new ArrayList<>();
@@ -84,7 +87,27 @@ public class VPrincipal_MySQL {
 
     private Cliente cliente;
 
-    public VPrincipal_MySQL() {
+    public VPrincipal_MySQL(ArrayList<Cliente> clientes) {
+
+        DefaultListModel<Cliente> model = new DefaultListModel<>();
+        for (Cliente c: clientes){
+            model.addElement(c);
+        }
+
+        listadoClientesEspectaculos.setModel(model);
+
+        tabla = new JTable();
+        tabla.setModel(new ListaClientesEspectaculosModel(new Cliente()));
+        resultadoClientesEspectaculos.setViewportView(tabla);
+
+        listadoClientesEspectaculos.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                tabla.setModel(new ListaClientesEspectaculosModel(listadoClientesEspectaculos.getSelectedValue()));
+                System.out.println(listadoClientesEspectaculos.getSelectedValue().getEspectaculos());
+            }
+        });
+
 
         bt_guardarCli.setVisible(false);
 
@@ -171,6 +194,7 @@ public class VPrincipal_MySQL {
             }
         });
 
+
     }
 
     public void cargaDatos() {
@@ -207,11 +231,18 @@ public class VPrincipal_MySQL {
 
 
     public void cargar_j_list() {
-        DefaultListModel<Espectaculo> model = new DefaultListModel<>();
+        DefaultListModel<Cliente> model = new DefaultListModel<>();
+        for (Cliente c: clientes){
+            model.addElement(c);
+        }
+
+        listadoClientesEspectaculos.setModel(model);
+
+        /*DefaultListModel<Cliente> model = new DefaultListModel<>();
         for (Espectaculo espectaculo : espectaculos) {
             model.addElement(espectaculo);
         }
-        listadoClientesEspectaculos.setModel(model);
+        listadoClientesEspectaculos.setModel(model);*/
     }
 
     public void cargar_j_list_clientes() {
