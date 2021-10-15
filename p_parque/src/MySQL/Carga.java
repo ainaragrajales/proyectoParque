@@ -4,6 +4,7 @@ import Models.*;
 import com.mysql.jdbc.*;
 
 import javax.swing.*;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -40,8 +41,9 @@ public class Carga {
                 espectaculo.setAforo(resul.getInt(3));
                 espectaculo.setDescripcion(resul.getString(4));
                 espectaculo.setLugar(resul.getString(5));
-                espectaculo.setFecha_Espec(resul.getString(6));
-                espectaculo.setHorario_espec(resul.getString(7));
+                espectaculo.setFecha_Espec(resul.getDate(6));
+                espectaculo.setHorario_espec(resul.getTime(7));
+                espectaculo.setPrecio(resul.getInt(8));
 
 
                 // Añado el objeto 'espectaculo' al ArrayList espectaculos
@@ -364,4 +366,41 @@ public class Carga {
     }
 
 
+    public void espectaculoNuevo(Espectaculo espectaculo) {
+
+        PreparedStatement ps;
+        String sql;
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+
+            //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque","root", "several975:burn:month:War");
+
+
+            Statement sentencia = (Statement) conexion.createStatement();
+
+            sql = "insert into espectaculos(no_espec, nombreEspec, aforo, descripcion, lugar, precio) values (?,?,?,?,?,?)";
+
+            ps = (PreparedStatement) conexion.prepareStatement(sql);
+            ps.setInt(1, espectaculo.getNo_Espect());
+            ps.setString(2, espectaculo.getNombreEspec());
+            ps.setInt(3, espectaculo.getAforo());
+            ps.setString(4, espectaculo.getDescripcion());
+            ps.setString(5, espectaculo.getLugar());
+            //ps.setDate(6, null);
+            //ps.setTime(7, null);
+            ps.setDouble(6, espectaculo.getPrecio());
+
+            ps.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Se han insertado los datos");
+
+            sentencia.close();
+            conexion.close();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Error" + e.getMessage());
+        }
+    }
 }

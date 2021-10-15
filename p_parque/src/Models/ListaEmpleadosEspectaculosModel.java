@@ -2,22 +2,24 @@ package Models;
 
 import javax.swing.table.AbstractTableModel;
 
-public class ListaClientesEspectaculosModel extends AbstractTableModel {
-
+public class ListaEmpleadosEspectaculosModel extends AbstractTableModel {
 
     private final String[] espectaculos = {"ID", "Nombre", "Aforo", "Descripción", "Lugar", "Fecha", "Horario", "Precio"};
 
-    //Propiedades
-    private final Cliente cliente;
 
-    public ListaClientesEspectaculosModel(Cliente cliente) {
-        this.cliente = cliente;
+    //Propiedades
+    private final Empleado empleado;
+
+    public ListaEmpleadosEspectaculosModel(Empleado empleado) {
+        this.empleado = empleado;
     }
+
+
 
 
     @Override
     public int getRowCount() {
-        return cliente.getEspectaculos().size();
+        return empleado.getEspectaculos().size();
     }
 
     @Override
@@ -31,11 +33,9 @@ public class ListaClientesEspectaculosModel extends AbstractTableModel {
         return espectaculos[column];
     }
 
-
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-
-        Espectaculo e = cliente.getEspectaculos().get(rowIndex);
+        Espectaculo e = empleado.getEspectaculos().get(rowIndex);
 
         return switch (columnIndex) {
             case 0 -> e.getNo_Espect();
@@ -49,4 +49,8 @@ public class ListaClientesEspectaculosModel extends AbstractTableModel {
             default -> null;
         };
     }
+
+
 }
+
+

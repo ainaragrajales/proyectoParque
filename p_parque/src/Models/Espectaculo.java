@@ -1,6 +1,8 @@
 package Models;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Espectaculo {
 
@@ -11,9 +13,9 @@ public class Espectaculo {
     private int aforo;
     private String descripcion;
     private String lugar;
-    private String fecha_Espec; //en sql es Date
-    private String horario_espec; //en sql es Time
-    private int precio;
+    private Date fecha_Espec; //en sql es Date
+    private Time horario_espec; //en sql es Time
+    private double precio;
 
     //lo mejor sería hacer un campo que sea fecha_hora y hacerlo con el DateFormatter
 
@@ -25,7 +27,7 @@ public class Espectaculo {
 
     // Constructor
 
-    public Espectaculo(int no_Espect, String nombreEspec, int aforo, String descripcion, String lugar, String fecha_Espec, String horario_espec, int precio) {
+    public Espectaculo(int no_Espect, String nombreEspec, int aforo, String descripcion, String lugar, Date fecha_Espec, Time horario_espec, double precio) {
         this.no_Espect = no_Espect;
         this.nombreEspec = nombreEspec;
         this.aforo = aforo;
@@ -86,27 +88,27 @@ public class Espectaculo {
         this.lugar = lugar;
     }
 
-    public String getFecha_Espec() {
+    public Date getFecha_Espec() {
         return fecha_Espec;
     }
 
-    public void setFecha_Espec(String fecha_Espec) {
+    public void setFecha_Espec(Date fecha_Espec) {
         this.fecha_Espec = fecha_Espec;
     }
 
-    public String getHorario_espec() {
+    public Time getHorario_espec() {
         return horario_espec;
     }
 
-    public void setHorario_espec(String horario_espec) {
+    public void setHorario_espec(Time horario_espec) {
         this.horario_espec = horario_espec;
     }
 
-    public int getPrecio() {
+    public double getPrecio() {
         return precio;
     }
 
-    public void setPrecio(int precio) {
+    public void setPrecio(double precio) {
         this.precio = precio;
     }
 

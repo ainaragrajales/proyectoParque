@@ -6,13 +6,17 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class VPrincipal_MySQL {
     public JPanel VPanelPrincipal;
     private JTabbedPane tabbedPane1;
     private JPanel PestanaEspectaculos;
-    private JList listaEspectaculos;
+    private JList<Espectaculo> listaEspectaculos;
     private JButton bt_AnadirEsp;
     private JButton bt_ModEsp;
     private JButton bt_eliminar;
@@ -49,7 +53,7 @@ public class VPrincipal_MySQL {
     private JButton bt_modificarCli;
     private JButton bt_eliminarCli;
     private JPanel PestanaEmpleados;
-    private JList listaEmpleados;
+    private JList<Empleado> listaEmpleados;
     private JButton bt_EmpleAnadir;
     private JButton bt_ModEmpl;
     private JButton bt_eliminarEmple;
@@ -70,14 +74,17 @@ public class VPrincipal_MySQL {
     private JButton bt_GuardarEmple;
     private JPanel PanelEspectaculos;
     private JList<Cliente> listadoClientesEspectaculos;
+    private JList<Empleado> listaEmpleadosEspectaculos;
     private JButton BotonAnadirEspec;
     private JButton BotonBorrarEspec;
     private JButton BotonModificarEspec;
     private JScrollPane resultadoClientesEspectaculos;
-    private JList listaEmpleadosEspectaculos;
+
     private JScrollPane resultadoEmpleadosEspectaculos;
+    private JTextField textField1;
 
     private JTable tabla;
+    private JTable tabla2;
 
     private ArrayList<Espectaculo> espectaculos = new ArrayList<>();
     private ArrayList<Cliente> clientes = new ArrayList<>();
@@ -86,15 +93,18 @@ public class VPrincipal_MySQL {
     private ArrayList<Empleado> empleados = new ArrayList<>();
 
     private Cliente cliente;
+    private Empleado empleado;
+    private Espectaculo espectaculo;
 
-    public VPrincipal_MySQL(ArrayList<Cliente> clientes) {
+    public VPrincipal_MySQL(ArrayList<Cliente> clientes, ArrayList<Empleado> empleados) {
 
-        DefaultListModel<Cliente> model = new DefaultListModel<>();
-        for (Cliente c: clientes){
-            model.addElement(c);
+        // Jlist clientes Jtable espectaculos
+        DefaultListModel<Cliente> modelClienteEspectaculo = new DefaultListModel<>();
+        for (Cliente c : clientes) {
+            modelClienteEspectaculo.addElement(c);
         }
 
-        listadoClientesEspectaculos.setModel(model);
+        listadoClientesEspectaculos.setModel(modelClienteEspectaculo);
 
         tabla = new JTable();
         tabla.setModel(new ListaClientesEspectaculosModel(new Cliente()));
@@ -109,18 +119,57 @@ public class VPrincipal_MySQL {
         });
 
 
+        // Jlist empleados Jtable espectaculos
+        DefaultListModel<Empleado> modelEmpleadoEspectaculo = new DefaultListModel<>();
+        for (Empleado e : empleados) {
+            modelEmpleadoEspectaculo.addElement(e);
+        }
+
+        listaEmpleadosEspectaculos.setModel(modelEmpleadoEspectaculo);
+
+        tabla2 = new JTable();
+        tabla2.setModel(new ListaEmpleadosEspectaculosModel(new Empleado()));
+        resultadoEmpleadosEspectaculos.setViewportView(tabla2);
+
+        listaEmpleadosEspectaculos.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+
+                tabla2.setModel(new ListaEmpleadosEspectaculosModel(listaEmpleadosEspectaculos.getSelectedValue()));
+                System.out.println(listaEmpleadosEspectaculos.getSelectedValue().getEspectaculos());
+
+            }
+        });
+
+
         bt_guardarCli.setVisible(false);
+        bt_GuardarEspectaculo.setVisible(false);
 
         cargaDatos();
-        cargar_j_list();
+        //cargar_j_list();
+        //actualizarJTable();
 
 
         cargar_j_list_clientes();
+        cargar_j_list_empleados();
+        cargar_j_list_espectaculos();
 
-        //actualizarJTable();
 
         list_clientes.addListSelectionListener(e -> actualizarClientes());
 
+        listaEspectaculos.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                actualizarEspectaculos();
+            }
+        });
+
+        listaEmpleados.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                actualizarEmpleados();
+            }
+        });
 
         bt_nuevoCli.addActionListener(e -> {
 
@@ -195,6 +244,57 @@ public class VPrincipal_MySQL {
         });
 
 
+        bt_AnadirEsp.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                et_ID_Espec.setEnabled(true);
+                limpiarCampos();
+                bt_GuardarEspectaculo.setVisible(true);
+
+            }
+        });
+
+        bt_GuardarEspectaculo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!comprobarCamposVaciosEspectaculos()){
+                    panelMensajePersonalizado("Campos Vacíos", "No puede haber campos vacíos. Comprueba todos los campos", 0);
+                } else if (!et_ID_Espec.isEnabled()){
+
+                } else {
+                    SimpleDateFormat formato = new SimpleDateFormat("yyyy/MM/dd");
+                    String aforoString = String.valueOf(et_aforo.getText());
+                    int aforoInt = Integer.parseInt(aforoString);
+                    String fechaString = String.valueOf(et_fecha.getText());
+                    Date fechaDate = null;
+                    try {
+                        fechaDate = formato.parse(fechaString);
+                    } catch (ParseException parseException) {
+                        parseException.printStackTrace();
+                    }
+                    String horarioString = String.valueOf(et_horario.getText());
+                    //Time horarioTime = Time.valueOf(horarioString);
+                    String precioString = String.valueOf(et_precio.getText());
+                    double precioDouble = Double.parseDouble(precioString);
+                    String idString = String.valueOf(et_ID_Espec.getText());
+                    int idInt = Integer.parseInt(idString);
+                    espectaculo = new Espectaculo(idInt, et_Espectaculo.getText(), aforoInt, et_Descripcion.getText(), et_lugar.getText(), null, null, precioDouble);
+
+                    espectaculos.add(espectaculo);
+                    for (Espectaculo espectaculo1: espectaculos){
+                        System.out.println(espectaculo1);
+                    }
+
+                    new Carga().espectaculoNuevo(espectaculo);
+                    cargaDatos();
+                    cargar_j_list_espectaculos();
+
+                }
+                limpiarCampos();
+                bt_GuardarEspectaculo.setVisible(false);
+            }
+        });
     }
 
     public void cargaDatos() {
@@ -232,7 +332,7 @@ public class VPrincipal_MySQL {
 
     public void cargar_j_list() {
         DefaultListModel<Cliente> model = new DefaultListModel<>();
-        for (Cliente c: clientes){
+        for (Cliente c : clientes) {
             model.addElement(c);
         }
 
@@ -253,6 +353,22 @@ public class VPrincipal_MySQL {
         list_clientes.setModel(model);
     }
 
+    public void cargar_j_list_empleados() {
+        DefaultListModel<Empleado> model = new DefaultListModel<>();
+        for (Empleado empleado : empleados) {
+            model.addElement(empleado);
+        }
+        listaEmpleados.setModel(model);
+    }
+
+    public void cargar_j_list_espectaculos() {
+        DefaultListModel<Espectaculo> model = new DefaultListModel<>();
+        for (Espectaculo espectaculo : espectaculos) {
+            model.addElement(espectaculo);
+        }
+        listaEspectaculos.setModel(model);
+    }
+
     public void actualizarJTable() {
         ArrayList<Espectaculo> espectaculos;
         espectaculos = new Carga().listaEspectaculos();
@@ -262,10 +378,32 @@ public class VPrincipal_MySQL {
     }
 
     private void limpiarCampos() {
+
         campo_edad.setText("");
         campo_dni.setText("");
         campo_apellido.setText("");
         campo_nombre.setText("");
+
+
+        et_dniEmp.setText("");
+        et_nombre.setText("");
+        et_apeEmple.setText("");
+        et_NacEmp.setText("");
+        et_fechaContrEmp.setText("");
+        et_NacioEmpl.setText("");
+        et_CargoEmpl.setText("");
+
+
+        et_ID_Espec.setText("");
+        et_Espectaculo.setText("");
+        et_aforo.setText("");
+        et_Descripcion.setText("");
+        et_lugar.setText("");
+        et_fecha.setText("");
+        et_horario.setText("");
+        et_precio.setText("");
+
+
     }
 
     public void actualizarClientes() {
@@ -276,6 +414,35 @@ public class VPrincipal_MySQL {
             campo_nombre.setText(cliente.getNombre());
             campo_apellido.setText(cliente.getApellidos());
             campo_edad.setText(String.valueOf(cliente.getEdad()));
+        }
+    }
+
+    public void actualizarEmpleados() {
+        Empleado empleado = listaEmpleados.getSelectedValue();
+
+        if (empleado != null) {
+            et_dniEmp.setText(empleado.getDniEmple());
+            et_nombre.setText(empleado.getNombreEmple());
+            et_apeEmple.setText(empleado.getApeEmple());
+            et_NacEmp.setText(String.valueOf(empleado.getFechaNac()));
+            et_fechaContrEmp.setText(String.valueOf(empleado.getFechaContr()));
+            et_NacioEmpl.setText(String.valueOf(empleado.getNacionalidad()));
+            et_CargoEmpl.setText(String.valueOf(empleado.getCargo()));
+        }
+    }
+
+    public void actualizarEspectaculos() {
+        Espectaculo espectaculo = listaEspectaculos.getSelectedValue();
+
+        if (espectaculo != null) {
+            et_ID_Espec.setText(String.valueOf(espectaculo.getNo_Espect()));
+            et_Espectaculo.setText(espectaculo.getNombreEspec());
+            et_aforo.setText(String.valueOf(espectaculo.getAforo()));
+            et_Descripcion.setText(espectaculo.getDescripcion());
+            et_lugar.setText(espectaculo.getLugar());
+            et_fecha.setText(String.valueOf(espectaculo.getFecha_Espec()));
+            et_horario.setText(String.valueOf(espectaculo.getHorario_espec()));
+            et_precio.setText(String.valueOf(espectaculo.getPrecio()));
         }
     }
 
@@ -291,6 +458,42 @@ public class VPrincipal_MySQL {
         campos.add(campo_nombre);
         campos.add(campo_apellido);
         campos.add(campo_edad);
+
+        for (JTextField campo : campos) {
+            if (campo.getText().equalsIgnoreCase("")) {
+                hayDato = false;
+            }
+        }
+        return hayDato;
+    }
+private boolean comprobarCamposVaciosEmpleados() {
+
+        boolean hayDato = true;
+        ArrayList<JTextField> campos = new ArrayList<>();
+        campos.add(campo_dni);
+        campos.add(campo_nombre);
+        campos.add(campo_apellido);
+        campos.add(campo_edad);
+
+        for (JTextField campo : campos) {
+            if (campo.getText().equalsIgnoreCase("")) {
+                hayDato = false;
+            }
+        }
+        return hayDato;
+    }
+private boolean comprobarCamposVaciosEspectaculos() {
+
+        boolean hayDato = true;
+        ArrayList<JTextField> campos = new ArrayList<>();
+        campos.add(et_ID_Espec);
+        campos.add(et_Espectaculo);
+        campos.add(et_aforo);
+        campos.add(et_Descripcion);
+        campos.add(et_lugar);
+        campos.add(et_fecha);
+        campos.add(et_horario);
+        campos.add(et_precio);
 
         for (JTextField campo : campos) {
             if (campo.getText().equalsIgnoreCase("")) {
