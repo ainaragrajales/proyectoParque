@@ -1,5 +1,6 @@
 package Models;
 
+import java.sql.Date;
 import java.util.ArrayList;
 
 public class Empleado {
@@ -9,8 +10,8 @@ public class Empleado {
     private String dniEmple;
     private String nombreEmple;
     private String ApeEmple;
-    private String fechaNac;
-    private String fechaContr;
+    private Date fechaNac;
+    private Date fechaContr;
     private String Nacionalidad;
     private String cargo;
 
@@ -22,13 +23,13 @@ public class Empleado {
 
     //Constructores
 
-    public Empleado(String dniEmple, String nombreEmple, String apeEmple, String fechaNac, String fechaContr, String nacionalidad, String cargo) {
+    public Empleado(String dniEmple, String nombreEmple, String apeEmple, Date fechaNac, Date fechaContr, String nacionalidad, String cargo) {
         this.dniEmple = dniEmple;
         this.nombreEmple = nombreEmple;
-        ApeEmple = apeEmple;
+        this.ApeEmple = apeEmple;
         this.fechaNac = fechaNac;
         this.fechaContr = fechaContr;
-        Nacionalidad = nacionalidad;
+        this.Nacionalidad = nacionalidad;
         this.cargo = cargo;
     }
 
@@ -64,19 +65,19 @@ public class Empleado {
         ApeEmple = apeEmple;
     }
 
-    public String getFechaNac() {
+    public Date getFechaNac() {
         return fechaNac;
     }
 
-    public void setFechaNac(String fechaNac) {
+    public void setFechaNac(Date fechaNac) {
         this.fechaNac = fechaNac;
     }
 
-    public String getFechaContr() {
+    public Date getFechaContr() {
         return fechaContr;
     }
 
-    public void setFechaContr(String fechaContr) {
+    public void setFechaContr(Date fechaContr) {
         this.fechaContr = fechaContr;
     }
 

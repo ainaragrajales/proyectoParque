@@ -6,11 +6,11 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Date;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class VPrincipal_MySQL {
     public JPanel VPanelPrincipal;
@@ -142,8 +142,10 @@ public class VPrincipal_MySQL {
         });
 
 
+        //Poner los botones de guardar en oculto
         bt_guardarCli.setVisible(false);
         bt_GuardarEspectaculo.setVisible(false);
+        bt_GuardarEmple.setVisible(false);
 
         cargaDatos();
         //cargar_j_list();
@@ -171,6 +173,7 @@ public class VPrincipal_MySQL {
             }
         });
 
+        //Botones de la pestaña Clientes
         bt_nuevoCli.addActionListener(e -> {
 
             campo_dni.setEnabled(true);
@@ -244,6 +247,8 @@ public class VPrincipal_MySQL {
         });
 
 
+
+        //Botones de la pestaña Espectaculos
         bt_AnadirEsp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -261,25 +266,40 @@ public class VPrincipal_MySQL {
                 if (!comprobarCamposVaciosEspectaculos()){
                     panelMensajePersonalizado("Campos Vacíos", "No puede haber campos vacíos. Comprueba todos los campos", 0);
                 } else if (!et_ID_Espec.isEnabled()){
-
-                } else {
-                    SimpleDateFormat formato = new SimpleDateFormat("yyyy/MM/dd");
                     String aforoString = String.valueOf(et_aforo.getText());
                     int aforoInt = Integer.parseInt(aforoString);
                     String fechaString = String.valueOf(et_fecha.getText());
-                    Date fechaDate = null;
-                    try {
-                        fechaDate = formato.parse(fechaString);
-                    } catch (ParseException parseException) {
-                        parseException.printStackTrace();
-                    }
+                    Date fechaDate = Date.valueOf(fechaString);
                     String horarioString = String.valueOf(et_horario.getText());
-                    //Time horarioTime = Time.valueOf(horarioString);
+                    Time horarioTime = Time.valueOf(horarioString);
                     String precioString = String.valueOf(et_precio.getText());
                     double precioDouble = Double.parseDouble(precioString);
                     String idString = String.valueOf(et_ID_Espec.getText());
                     int idInt = Integer.parseInt(idString);
-                    espectaculo = new Espectaculo(idInt, et_Espectaculo.getText(), aforoInt, et_Descripcion.getText(), et_lugar.getText(), null, null, precioDouble);
+                    espectaculo = new Espectaculo(idInt, et_Espectaculo.getText(), aforoInt, et_Descripcion.getText(), et_lugar.getText(), fechaDate, horarioTime, precioDouble);
+
+                    espectaculos.add(espectaculo);
+                    for (Espectaculo espectaculo1: espectaculos){
+                        System.out.println(espectaculo1);
+                    }
+
+                    new Carga().modificarEspectaculo(espectaculo);
+                    cargaDatos();
+                    cargar_j_list_espectaculos();
+
+                } else {
+                    //SimpleDateFormat formato = new SimpleDateFormat("yyyy/MM/dd");
+                    String aforoString = String.valueOf(et_aforo.getText());
+                    int aforoInt = Integer.parseInt(aforoString);
+                    String fechaString = String.valueOf(et_fecha.getText());
+                    Date fechaDate = Date.valueOf(fechaString);
+                    String horarioString = String.valueOf(et_horario.getText());
+                    Time horarioTime = Time.valueOf(horarioString);
+                    String precioString = String.valueOf(et_precio.getText());
+                    double precioDouble = Double.parseDouble(precioString);
+                    String idString = String.valueOf(et_ID_Espec.getText());
+                    int idInt = Integer.parseInt(idString);
+                    espectaculo = new Espectaculo(idInt, et_Espectaculo.getText(), aforoInt, et_Descripcion.getText(), et_lugar.getText(), fechaDate, horarioTime, precioDouble);
 
                     espectaculos.add(espectaculo);
                     for (Espectaculo espectaculo1: espectaculos){
@@ -295,9 +315,136 @@ public class VPrincipal_MySQL {
                 bt_GuardarEspectaculo.setVisible(false);
             }
         });
+
+        bt_ModEsp.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                et_ID_Espec.setEnabled(false);
+                bt_GuardarEspectaculo.setVisible(true);
+
+            }
+        });
+
+
+        bt_eliminar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                String aforoString = String.valueOf(et_aforo.getText());
+                int aforoInt = Integer.parseInt(aforoString);
+                String fechaString = String.valueOf(et_fecha.getText());
+                Date fechaDate = Date.valueOf(fechaString);
+                String horarioString = String.valueOf(et_horario.getText());
+                Time horarioTime = Time.valueOf(horarioString);
+                String precioString = String.valueOf(et_precio.getText());
+                double precioDouble = Double.parseDouble(precioString);
+                String idString = String.valueOf(et_ID_Espec.getText());
+                int idInt = Integer.parseInt(idString);
+                espectaculo = new Espectaculo(idInt, et_Espectaculo.getText(), aforoInt, et_Descripcion.getText(), et_lugar.getText(), fechaDate, horarioTime, precioDouble);
+
+                espectaculos.add(espectaculo);
+                for (Espectaculo espectaculo1: espectaculos){
+                    System.out.println(espectaculo1);
+                }
+                new Carga().eliminarEspectaculo(espectaculo);
+                cargaDatos();
+                cargar_j_list_espectaculos();
+
+                limpiarCampos();
+                bt_GuardarEspectaculo.setVisible(false);
+
+            }
+        });
+
+
+        bt_EmpleAnadir.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                et_dniEmp.setEnabled(true);
+                limpiarCampos();
+                bt_GuardarEmple.setVisible(true);
+            }
+        });
+        bt_ModEmpl.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                et_dniEmp.setEnabled(false);
+                bt_GuardarEmple.setVisible(true);
+            }
+        });
+        bt_eliminarEmple.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String fechaNacString = String.valueOf(et_NacEmp.getText());
+                Date fechaNacDate = Date.valueOf(fechaNacString);
+                String fechaContString = String.valueOf(et_fechaContrEmp.getText());
+                Date fechaContDate = Date.valueOf(fechaContString);
+
+                empleado = new Empleado(et_dniEmp.getText(), et_emple.getText(), et_apeEmple.getText(), fechaNacDate, fechaContDate, et_NacioEmpl.getText(), et_CargoEmpl.getText());
+                empleados.add(empleado);
+                for (Empleado empleado1: empleados){
+                    System.out.println(empleado1);
+                }
+
+                new Carga().eliminarEmpleado(empleado);
+                cargaDatos();
+                cargar_j_list_empleados();
+
+                limpiarCampos();
+                bt_GuardarEmple.setVisible(false);
+            }
+        });
+        bt_GuardarEmple.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!comprobarCamposVaciosEmpleados()){
+                    panelMensajePersonalizado("Campos Vacíos", "No puede haber campos vacíos. Comprueba todos los campos", 0);
+                } else if (!et_dniEmp.isEnabled()){
+
+                    String fechaNacString = String.valueOf(et_NacEmp.getText());
+                    Date fechaNacDate = Date.valueOf(fechaNacString);
+                    String fechaContString = String.valueOf(et_fechaContrEmp.getText());
+                    Date fechaContDate = Date.valueOf(fechaContString);
+
+                    empleado = new Empleado(et_dniEmp.getText(), et_emple.getText(), et_apeEmple.getText(), fechaNacDate, fechaContDate, et_NacioEmpl.getText(), et_CargoEmpl.getText());
+                    empleados.add(empleado);
+                    for (Empleado empleado1: empleados){
+                        System.out.println(empleado1);
+                    }
+
+                    new Carga().modificarEmpleado(empleado);
+                    cargaDatos();
+                    cargar_j_list_empleados();
+
+
+                } else {
+                    String fechaNacString = String.valueOf(et_NacEmp.getText());
+                    Date fechaNacDate = Date.valueOf(fechaNacString);
+                    String fechaContString = String.valueOf(et_fechaContrEmp.getText());
+                    Date fechaContDate = Date.valueOf(fechaContString);
+
+                    empleado = new Empleado(et_dniEmp.getText(), et_emple.getText(), et_apeEmple.getText(), fechaNacDate, fechaContDate, et_NacioEmpl.getText(), et_CargoEmpl.getText());
+                    empleados.add(empleado);
+                    for (Empleado empleado1: empleados){
+                        System.out.println(empleado1);
+                    }
+
+                    new Carga().empleadoNuevo(empleado);
+                    cargaDatos();
+                    cargar_j_list_empleados();
+
+                }
+                limpiarCampos();
+                bt_GuardarEmple.setVisible(false);
+            }
+        });
     }
 
+
     public void cargaDatos() {
+
+        empleados = new Carga().listaEmpleados();
 
         espectaculos = new Carga().listaEspectaculos();
 

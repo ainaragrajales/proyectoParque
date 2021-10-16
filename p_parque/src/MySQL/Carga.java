@@ -90,8 +90,8 @@ public class Carga {
                 empleado.setDniEmple(resul.getString(1));
                 empleado.setNombreEmple(resul.getString(2));
                 empleado.setApeEmple(resul.getString(3));
-                empleado.setFechaNac(resul.getString(4));
-                empleado.setFechaContr(resul.getString(5));
+                empleado.setFechaNac(resul.getDate(4));
+                empleado.setFechaContr(resul.getDate(5));
                 empleado.setNacionalidad(resul.getString(6));
                 empleado.setCargo(resul.getString(7));
 
@@ -380,7 +380,7 @@ public class Carga {
 
             Statement sentencia = (Statement) conexion.createStatement();
 
-            sql = "insert into espectaculos(no_espec, nombreEspec, aforo, descripcion, lugar, precio) values (?,?,?,?,?,?)";
+            sql = "insert into espectaculos(no_espec, nombreEspec, aforo, descripcion, lugar, fecha_Espec, horario_Espec, precio) values (?,?,?,?,?,?,?,?)";
 
             ps = (PreparedStatement) conexion.prepareStatement(sql);
             ps.setInt(1, espectaculo.getNo_Espect());
@@ -388,9 +388,9 @@ public class Carga {
             ps.setInt(3, espectaculo.getAforo());
             ps.setString(4, espectaculo.getDescripcion());
             ps.setString(5, espectaculo.getLugar());
-            //ps.setDate(6, null);
-            //ps.setTime(7, null);
-            ps.setDouble(6, espectaculo.getPrecio());
+            ps.setDate(6, espectaculo.getFecha_Espec());
+            ps.setTime(7, espectaculo.getHorario_espec());
+            ps.setDouble(8, espectaculo.getPrecio());
 
             ps.executeUpdate();
 
@@ -403,4 +403,191 @@ public class Carga {
             JOptionPane.showMessageDialog(null, "Error" + e.getMessage());
         }
     }
+
+    public void modificarEspectaculo(Espectaculo espectaculo){
+
+        PreparedStatement ps;
+        String sql;
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+
+            //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque","root", "several975:burn:month:War");
+
+
+            Statement sentencia = (Statement) conexion.createStatement();
+
+            sql = "update espectaculos set  nombreEspec=?, aforo=?, descripcion=?, lugar=?, fecha_Espec=?, horario_Espec=?, precio=? where no_espec=?";
+
+            ps = (PreparedStatement) conexion.prepareStatement(sql);
+            ps.setString(1, espectaculo.getNombreEspec());
+            ps.setInt(2, espectaculo.getAforo());
+            ps.setString(3, espectaculo.getDescripcion());
+            ps.setString(4, espectaculo.getLugar());
+            ps.setDate(5, espectaculo.getFecha_Espec());
+            ps.setTime(6, espectaculo.getHorario_espec());
+            ps.setDouble(7, espectaculo.getPrecio());
+            ps.setInt(8, espectaculo.getNo_Espect());
+
+
+            ps.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Se han insertado los datos");
+
+            sentencia.close();
+            conexion.close();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Error" + e.getMessage());
+        }
+    }
+
+    public void eliminarEspectaculo(Espectaculo espectaculo) {
+
+        PreparedStatement ps;
+        String sql;
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+
+
+            //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque","root", "several975:burn:month:War");
+
+
+            Statement sentencia = (Statement) conexion.createStatement();
+
+            sql = "delete from espectaculos where no_espec=?";
+
+            ps = (PreparedStatement) conexion.prepareStatement(sql);
+            ps.setInt(1, espectaculo.getNo_Espect());
+
+
+            ps.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Se ha borrado el espectaculo " + espectaculo.getNombreEspec());
+
+            sentencia.close();
+            conexion.close();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Error" + e.getMessage());
+        }
+
+    }
+
+    public void empleadoNuevo(Empleado empleado){
+
+        PreparedStatement ps;
+        String sql;
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+
+            //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque","root", "several975:burn:month:War");
+
+
+            Statement sentencia = (Statement) conexion.createStatement();
+
+            sql = "insert into empleados(dniEmple, nombreEmple, ApeEmple, f_Nac_Emple, f_Cont_Emple, nacionalidad, cargo) values (?,?,?,?,?,?,?)";
+
+            ps = (PreparedStatement) conexion.prepareStatement(sql);
+            ps.setString(1, empleado.getDniEmple());
+            ps.setString(2, empleado.getNombreEmple());
+            ps.setString(3, empleado.getApeEmple());
+            ps.setDate(4, empleado.getFechaNac());
+            ps.setDate(5, empleado.getFechaContr());
+            ps.setString(6, empleado.getNacionalidad());
+            ps.setString(7, empleado.getCargo());
+
+            ps.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Se han insertado los datos");
+
+            sentencia.close();
+            conexion.close();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Error" + e.getMessage());
+        }
+
+    }
+
+    public void modificarEmpleado(Empleado empleado){
+
+        PreparedStatement ps;
+        String sql;
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+
+            //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque","root", "several975:burn:month:War");
+
+
+            Statement sentencia = (Statement) conexion.createStatement();
+
+            sql = "update empleados set  nombreEmple=?, ApeEmple=?, f_Nac_Emple=?, lugar=?, f_Cont_Emple=?, nacionalidad=?, cargo=? where dniEmple=?";
+
+            ps = (PreparedStatement) conexion.prepareStatement(sql);
+            ps.setString(1, empleado.getNombreEmple());
+            ps.setString(2, empleado.getApeEmple());
+            ps.setDate(3, empleado.getFechaNac());
+            ps.setDate(4, empleado.getFechaContr());
+            ps.setString(5, empleado.getNacionalidad());
+            ps.setString(6, empleado.getCargo());
+            ps.setString(7, empleado.getDniEmple());
+
+
+            ps.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Se han insertado los datos");
+
+            sentencia.close();
+            conexion.close();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Error" + e.getMessage());
+        }
+    }
+
+    public void eliminarEmpleado(Empleado empleado){
+
+        PreparedStatement ps;
+        String sql;
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+
+
+            //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque","root", "several975:burn:month:War");
+
+
+            Statement sentencia = (Statement) conexion.createStatement();
+
+            sql = "delete from empleados where dniEmple=?";
+
+            ps = (PreparedStatement) conexion.prepareStatement(sql);
+            ps.setString(1, empleado.getDniEmple());
+
+
+            ps.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Se ha borrado el empleado " + empleado.getNombreEmple());
+
+            sentencia.close();
+            conexion.close();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Error" + e.getMessage());
+        }
+
+
+    }
+
+
+
 }
