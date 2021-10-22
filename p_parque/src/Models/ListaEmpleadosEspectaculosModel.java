@@ -46,6 +46,7 @@ public class ListaEmpleadosEspectaculosModel extends AbstractTableModel {
             case 5 -> e.getFecha_Espec();
             case 6 -> e.getHorario_espec();
             case 7 -> e.getPrecio();
+            case 8 -> e.getResponsable();
             default -> null;
         };
     }

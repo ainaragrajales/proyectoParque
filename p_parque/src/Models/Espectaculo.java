@@ -17,6 +17,7 @@ public class Espectaculo {
     private Date fecha_Espec; //en sql es Date
     private Time horario_espec; //en sql es Time
     private double precio;
+    private String responsable;
 
     //lo mejor sería hacer un campo que sea fecha_hora y hacerlo con el DateFormatter
 
@@ -28,7 +29,7 @@ public class Espectaculo {
 
     // Constructor
 
-    public Espectaculo(int no_Espect, String nombreEspec, int aforo, String descripcion, String lugar, Date fecha_Espec, Time horario_espec, double precio) {
+    public Espectaculo(int no_Espect, String nombreEspec, int aforo, String descripcion, String lugar, Date fecha_Espec, Time horario_espec, double precio, String responsable) {
         this.no_Espect = no_Espect;
         this.nombreEspec = nombreEspec;
         this.aforo = aforo;
@@ -37,10 +38,22 @@ public class Espectaculo {
         this.fecha_Espec = fecha_Espec;
         this.horario_espec = horario_espec;
         this.precio=precio;
+        this.responsable = responsable;
     }
 
     // Constructor vacío
     public Espectaculo() {
+    }
+
+    public Espectaculo(String nombreEspec, int aforo, String descripcion, String lugar, Date fecha_Espec, Time horario_espec, double precio,String responsable) {
+        this.nombreEspec = nombreEspec;
+        this.aforo = aforo;
+        this.descripcion = descripcion;
+        this.lugar = lugar;
+        this.fecha_Espec = fecha_Espec;
+        this.horario_espec = horario_espec;
+        this.precio = precio;
+        this.responsable=responsable;
     }
 
     public Espectaculo(String nombreEspec) {
@@ -113,6 +126,15 @@ public class Espectaculo {
         this.precio = precio;
     }
 
+    public String getResponsable() {
+        return responsable;
+    }
+
+    public void setResponsable(String responsable) {
+        this.responsable = responsable;
+    }
+
+
 
     public ArrayList<Cliente> getClientes() {
         return clientes;
@@ -129,6 +151,7 @@ public class Espectaculo {
     public void setEmpleados(ArrayList<Empleado> empleados) {
         this.empleados = empleados;
     }
+
 
     //toString() -> ya se pondrá bonito... solo pongo el nombre de momento para no ocupar tanto espacio
     @Override

@@ -16,6 +16,11 @@ public class Espectaculos_Empleado {
         this.espectaculo = espectaculo;
     }
 
+    public Espectaculos_Empleado(String empleado, int espectaculo) {
+        this.empleado = empleado;
+        this.espectaculo = espectaculo;
+    }
+
     public Espectaculos_Empleado() {
     }
 

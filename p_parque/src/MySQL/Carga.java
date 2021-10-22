@@ -44,6 +44,7 @@ public class Carga {
                 espectaculo.setFecha_Espec(resul.getDate(6));
                 espectaculo.setHorario_espec(resul.getTime(7));
                 espectaculo.setPrecio(resul.getInt(8));
+                espectaculo.setResponsable(resul.getString(9));
 
 
                 // Añado el objeto 'espectaculo' al ArrayList espectaculos
@@ -383,14 +384,14 @@ public class Carga {
             sql = "insert into espectaculos(no_espec, nombreEspec, aforo, descripcion, lugar, fecha_Espec, horario_Espec, precio) values (?,?,?,?,?,?,?,?)";
 
             ps = (PreparedStatement) conexion.prepareStatement(sql);
-            ps.setInt(1, espectaculo.getNo_Espect());
-            ps.setString(2, espectaculo.getNombreEspec());
-            ps.setInt(3, espectaculo.getAforo());
-            ps.setString(4, espectaculo.getDescripcion());
-            ps.setString(5, espectaculo.getLugar());
-            ps.setDate(6, espectaculo.getFecha_Espec());
-            ps.setTime(7, espectaculo.getHorario_espec());
-            ps.setDouble(8, espectaculo.getPrecio());
+            ps.setString(1, espectaculo.getNombreEspec());
+            ps.setInt(2, espectaculo.getAforo());
+            ps.setString(3, espectaculo.getDescripcion());
+            ps.setString(4, espectaculo.getLugar());
+            ps.setDate(5, espectaculo.getFecha_Espec());
+            ps.setTime(6, espectaculo.getHorario_espec());
+            ps.setDouble(7, espectaculo.getPrecio());
+            ps.setString(8, espectaculo.getResponsable());
 
             ps.executeUpdate();
 
@@ -402,6 +403,50 @@ public class Carga {
         } catch (SQLException | ClassNotFoundException e) {
             JOptionPane.showMessageDialog(null, "Error" + e.getMessage());
         }
+    }
+
+    public int idMaxEspectaculos() {
+
+        Espectaculo espectaculo = null;
+        String sql = "SELECT * FROM clientes";
+
+        try {
+            //Cargar el driver
+            Class.forName("com.mysql.jdbc.Driver");
+
+            //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque","root", "several975:burn:month:War");
+
+            Statement sentencia = (Statement) conexion.createStatement();
+
+            // hace la consulta
+            ResultSet resul = sentencia.executeQuery("SELECT MAX(no_espec) AS id FROM espectaculos");
+
+            while (resul.next()) {
+                // Creo un objeto 'espectaculo' vacío
+                espectaculo = new Espectaculo((String.valueOf(resul.getInt(1))));
+
+                // voy pasáandole los atributos al objeto 'espectaculo'
+                espectaculo.setNo_Espect(resul.getInt(1));
+
+            }
+
+
+            // Cerrar ResultSet
+            resul.close();
+            // Cerrar Statement
+            sentencia.close();
+            // Cerrar conexion
+            conexion.close();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            // hacer algo con la excepcion
+        }
+
+
+
+        // La función me devuelve el ArrayList de espectaculos
+        return espectaculo.getNo_Espect();
     }
 
     public void modificarEspectaculo(Espectaculo espectaculo){
@@ -476,6 +521,41 @@ public class Carga {
         }
 
     }
+
+    public void anadirEmpleadoEspectaculo( String dniEmple,int idEspectaculo) {
+
+        java.sql.PreparedStatement ps;
+        String sql;
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+
+            //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque","root", "several975:burn:month:War");
+
+
+            Statement sentencia = (Statement) conexion.createStatement();
+            sql = "insert into Espectaculos_Empleados(Empleado, Espectaculo) values (?,?)";
+
+            ps = (java.sql.PreparedStatement) conexion.prepareStatement(sql);
+
+            ps.setString(1, dniEmple);
+
+            ps.setInt(2, idEspectaculo);
+
+            ps.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Se han insertado los datos");
+
+            sentencia.close();
+            conexion.close();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Error" + e.getMessage());
+        }
+
+    }
+
 
     public void empleadoNuevo(Empleado empleado){
 
@@ -589,5 +669,70 @@ public class Carga {
     }
 
 
+    public String infoMySql(JTextArea infoJtextArea) {
+
+        String info = "";
+        try {
+
+            // MySQL
+
+            //Cargar el driver
+
+            Class.forName("com.mysql.jdbc.Driver");
+            //Class.forName("oracle.jdbc.driver.OracleDriver");
+
+            // Establecemos la conexion con la BD
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque","root", "several975:burn:month:War");
+
+            // Preparamos la consulta
+            DatabaseMetaData dbmd = (DatabaseMetaData) conexion.getMetaData();//Creamos objeto DatabaseMetaData
+
+            System.out.println();
+
+            ResultSet resul = null;
+            String nombre = dbmd.getDatabaseProductName();
+            String driver = dbmd.getDriverName();
+            String url = dbmd.getURL();
+            String usuario = dbmd.getUserName();
+
+            System.out.println("INFORMACION SOBRE LA BASE DE DATOS: " + nombre);
+            System.out.println("Driver : " + driver);
+            System.out.println("URL : " + url);
+            System.out.println("Usuario: " + usuario);
+
+            resul = dbmd.getTables("Juanan", null, null, null);
+
+            info += "\nINFORMACION SOBRE LA BASE DE DATOS: " + nombre + "\r\n\n";
+            info += "Driver : " + driver + "\r\n";
+            info += "URL : " + url + "\r\n";
+            info += "Usuario: " + usuario + "\r\n\n";
+
+
+            while (resul.next()) {
+                String catalogo = resul.getString(1);//columna 1 que devuelve ResulSet
+                String esquema = resul.getString(2); //columna 2
+                String tabla = resul.getString(3); //columna 3
+                String tipo = resul.getString(4); //columna 4
+
+                System.out.println(tipo + " - Catalogo: " + catalogo + ", Esquema : " + esquema + ", Nombre : " + tabla);
+
+                info += (tipo + " - Catalogo: " + catalogo + ", Esquema : " + esquema + ", Nombre : " + tabla) + "\r\n";
+
+                infoJtextArea.setText(info);
+                infoJtextArea.setEditable(false);
+
+            }
+
+            //Cerrar conexión
+
+            conexion.close();
+
+        } catch (ClassNotFoundException | SQLException p) {
+            p.printStackTrace();
+        }
+
+
+        return info;
+    }
 
 }

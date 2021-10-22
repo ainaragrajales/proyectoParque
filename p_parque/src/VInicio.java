@@ -58,7 +58,7 @@ public class VInicio {
             if (!ventanaAbierta) {
                 JFrame frame = new JFrame("Parque My Sql");
                 //VPrincipal_MySQL vp = new VPrincipal_MySQL(clientes);
-                frame.setContentPane((new VPrincipal_MySQL(clientes, empleados)).VPanelPrincipal);
+                frame.setContentPane((new VPrincipal_MySQL(clientes, empleados,espectaculosEmpleados)).VPanelPrincipal);
                 //(new VPrincipal_MySQL(clientes)).cargaDatos();
                 frame.setMinimumSize(new Dimension(1200, 600)); // Lo ajusto a un tamaño para que se vea bien
                 frame.setLocationRelativeTo(null); // Saca la ventana al centro
@@ -83,7 +83,7 @@ public class VInicio {
                 for (int k = 0; k < clientes.size(); k++) {
                     if (espectaculos.get(i).getNo_Espect() == espectaculosClientes.get(j).getEspectaculo() && clientes.get(k).getDni().equalsIgnoreCase(espectaculosClientes.get(j).getCliente())) {
                         Cliente c = new Cliente(clientes.get(k).getDni(), clientes.get(k).getNombre(), clientes.get(k).getApellidos(), clientes.get(k).getEdad());
-                        Espectaculo e = new Espectaculo(espectaculos.get(i).getNo_Espect(), espectaculos.get(i).getNombreEspec(), espectaculos.get(i).getAforo(), espectaculos.get(i).getDescripcion(), espectaculos.get(i).getLugar(), espectaculos.get(i).getFecha_Espec(), espectaculos.get(i).getHorario_espec(), espectaculos.get(i).getPrecio());
+                        Espectaculo e = new Espectaculo(espectaculos.get(i).getNo_Espect(), espectaculos.get(i).getNombreEspec(), espectaculos.get(i).getAforo(), espectaculos.get(i).getDescripcion(), espectaculos.get(i).getLugar(), espectaculos.get(i).getFecha_Espec(), espectaculos.get(i).getHorario_espec(), espectaculos.get(i).getPrecio(), espectaculos.get(i).getResponsable());
 
                         System.out.println("Cliente: " + c);
                         System.out.println("DNI cliente: " + espectaculosClientes.get(j).getCliente());
@@ -123,7 +123,7 @@ public class VInicio {
                 for (int k = 0; k < empleados.size(); k++) {
                     if (espectaculos.get(i).getNo_Espect() == espectaculosEmpleados.get(j).getEspectaculo() && empleados.get(k).getDniEmple().equalsIgnoreCase(espectaculosEmpleados.get(j).getEmpleado())) {
                         Empleado empleado = new Empleado(empleados.get(k).getDniEmple(), empleados.get(k).getNombreEmple(), empleados.get(k).getApeEmple(), empleados.get(k).getFechaNac(), empleados.get(k).getFechaContr(), empleados.get(k).getNacionalidad(), empleados.get(k).getCargo());
-                        Espectaculo e = new Espectaculo(espectaculos.get(i).getNo_Espect(), espectaculos.get(i).getNombreEspec(), espectaculos.get(i).getAforo(), espectaculos.get(i).getDescripcion(), espectaculos.get(i).getLugar(), espectaculos.get(i).getFecha_Espec(), espectaculos.get(i).getHorario_espec(), espectaculos.get(i).getPrecio());
+                        Espectaculo e = new Espectaculo(espectaculos.get(i).getNo_Espect(), espectaculos.get(i).getNombreEspec(), espectaculos.get(i).getAforo(), espectaculos.get(i).getDescripcion(), espectaculos.get(i).getLugar(), espectaculos.get(i).getFecha_Espec(), espectaculos.get(i).getHorario_espec(), espectaculos.get(i).getPrecio(), espectaculos.get(i).getResponsable());
 
                         System.out.println("Empleado: " + empleado);
                         System.out.println("DNI empleado: " + espectaculosEmpleados.get(j).getEmpleado());
@@ -242,7 +242,7 @@ public class VInicio {
 
     public void abrirVPrincipal() {
         JFrame frame = new JFrame("Gestión Parques");
-        VPrincipal_MySQL vp = new VPrincipal_MySQL(clientes, empleados);
+        VPrincipal_MySQL vp = new VPrincipal_MySQL(clientes, empleados, espectaculosEmpleados);
         frame.setContentPane(vp.getVPanelPrincipal());
         /*vp.CargaCLientes();
         vp.CargaEmples();

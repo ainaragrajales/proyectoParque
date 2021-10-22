@@ -81,6 +81,11 @@ public class VPrincipal_MySQL {
     private JScrollPane resultadoClientesEspectaculos;
 
     private JScrollPane resultadoEmpleadosEspectaculos;
+    private JLabel lb_responsable;
+    private JComboBox comboBoxEmpleados;
+    private JLabel lb_infoMySql;
+    private JTextArea textAreaInfoMySql;
+    private JButton infoButton;
     private JTextField textField1;
 
     private JTable tabla;
@@ -95,8 +100,19 @@ public class VPrincipal_MySQL {
     private Cliente cliente;
     private Empleado empleado;
     private Espectaculo espectaculo;
+    private Espectaculos_Empleado espectaculoEmpleado;
 
-    public VPrincipal_MySQL(ArrayList<Cliente> clientes, ArrayList<Empleado> empleados) {
+    public VPrincipal_MySQL(ArrayList<Cliente> clientes, ArrayList<Empleado> empleados, ArrayList<Espectaculos_Empleado> espectaculosEmpleados) {
+
+        // Carga de los empleados en un model de combobox para seleccionar el responsable, luefo le paso el modelo al objeto comboBox de la ventana
+        DefaultComboBoxModel<Empleado> empleModel = new DefaultComboBoxModel<>();
+
+        for (Empleado empleado : empleados) {
+            empleModel.addElement(empleado);
+
+        }
+        comboBoxEmpleados.setModel(empleModel);
+
 
         // Jlist clientes Jtable espectaculos
         DefaultListModel<Cliente> modelClienteEspectaculo = new DefaultListModel<>();
@@ -159,19 +175,9 @@ public class VPrincipal_MySQL {
 
         list_clientes.addListSelectionListener(e -> actualizarClientes());
 
-        listaEspectaculos.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                actualizarEspectaculos();
-            }
-        });
+        listaEspectaculos.addListSelectionListener(e -> actualizarEspectaculos());
 
-        listaEmpleados.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                actualizarEmpleados();
-            }
-        });
+        listaEmpleados.addListSelectionListener(e -> actualizarEmpleados());
 
         //Botones de la pestaña Clientes
         bt_nuevoCli.addActionListener(e -> {
@@ -210,6 +216,7 @@ public class VPrincipal_MySQL {
                     cargar_j_list_clientes();
 
                 }
+                //new Carga().listaClientesEspectaculo();
                 limpiarCampos();
                 bt_guardarCli.setVisible(false);
             }
@@ -254,6 +261,7 @@ public class VPrincipal_MySQL {
             public void actionPerformed(ActionEvent e) {
 
                 et_ID_Espec.setEnabled(true);
+                //et_ID_Espec.setVisible(false);
                 limpiarCampos();
                 bt_GuardarEspectaculo.setVisible(true);
 
@@ -264,8 +272,11 @@ public class VPrincipal_MySQL {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!comprobarCamposVaciosEspectaculos()){
+
                     panelMensajePersonalizado("Campos Vacíos", "No puede haber campos vacíos. Comprueba todos los campos", 0);
+
                 } else if (!et_ID_Espec.isEnabled()){
+
                     String aforoString = String.valueOf(et_aforo.getText());
                     int aforoInt = Integer.parseInt(aforoString);
                     String fechaString = String.valueOf(et_fecha.getText());
@@ -274,9 +285,10 @@ public class VPrincipal_MySQL {
                     Time horarioTime = Time.valueOf(horarioString);
                     String precioString = String.valueOf(et_precio.getText());
                     double precioDouble = Double.parseDouble(precioString);
-                    String idString = String.valueOf(et_ID_Espec.getText());
-                    int idInt = Integer.parseInt(idString);
-                    espectaculo = new Espectaculo(idInt, et_Espectaculo.getText(), aforoInt, et_Descripcion.getText(), et_lugar.getText(), fechaDate, horarioTime, precioDouble);
+                    String responsable = String.valueOf(comboBoxEmpleados.getSelectedItem());
+                    //String idString = String.valueOf(et_ID_Espec.getText());
+                    //int idInt = Integer.parseInt(idString);
+                    espectaculo = new Espectaculo(et_Espectaculo.getText(), aforoInt, et_Descripcion.getText(), et_lugar.getText(), fechaDate, horarioTime, precioDouble, responsable);
 
                     espectaculos.add(espectaculo);
                     for (Espectaculo espectaculo1: espectaculos){
@@ -297,9 +309,10 @@ public class VPrincipal_MySQL {
                     Time horarioTime = Time.valueOf(horarioString);
                     String precioString = String.valueOf(et_precio.getText());
                     double precioDouble = Double.parseDouble(precioString);
-                    String idString = String.valueOf(et_ID_Espec.getText());
-                    int idInt = Integer.parseInt(idString);
-                    espectaculo = new Espectaculo(idInt, et_Espectaculo.getText(), aforoInt, et_Descripcion.getText(), et_lugar.getText(), fechaDate, horarioTime, precioDouble);
+                    //String idString = String.valueOf(et_ID_Espec.getText());
+                    //int idInt = Integer.parseInt(idString);
+                    String responsable = String.valueOf(comboBoxEmpleados.getSelectedItem());
+                    espectaculo = new Espectaculo(et_Espectaculo.getText(), aforoInt, et_Descripcion.getText(), et_lugar.getText(), fechaDate, horarioTime, precioDouble, responsable);
 
                     espectaculos.add(espectaculo);
                     for (Espectaculo espectaculo1: espectaculos){
@@ -307,8 +320,36 @@ public class VPrincipal_MySQL {
                     }
 
                     new Carga().espectaculoNuevo(espectaculo);
+
+                    // Hayo el id máximo del ultima inserción de espectaculos y se lo paso a la tabla de espectaculos_Empleados para hacer el insert
+                    int idmax = new Carga().idMaxEspectaculos();
+                    // Comprobacion por pantalla del iD máximo:
+                    System.out.println("\nID máximo de la tabla espectáculo es: " + idmax);
+
+                    // Hago un cast del objeto seleccionado del combobox a objeto Empleado, para poder aaceder luego a su dni  y pasarselo al constructor y a la función para añadir a la table espectaculos_empleados
+                    Empleado ep = (Empleado) comboBoxEmpleados.getSelectedItem();
+                    System.out.println("Empleado: " + ep.getNombreEmple() + ", " + ep.getDniEmple());
+                    ;
+
+
+                    // Añado el empleado responsable a la tabla de espectaculos_empleados, con el dni del empleado escogido del comboBox String) y el espectaculo recien añadido (int)
+                    espectaculoEmpleado = new Espectaculos_Empleado(ep.getDniEmple(), idmax);
+                    espectaculosEmpleados.add(espectaculoEmpleado);
+
+                    // Añado al empleado relacionado con su espectáculo  a la tabla de espectáculos_empleados
+                    new Carga().anadirEmpleadoEspectaculo(ep.getDniEmple(), idmax);
+
+
+                    // Saco por pantalla una lista con todos los empleados con sus espectáculos que hay en la base de datos de la tabal espectaculos_empleados
+                    //espectaculoEmpleado.mostrarEspectaculosEmpleados(espectaculosEmpleados);
+                    for (Espectaculos_Empleado ep1: espectaculosEmpleados){
+                        System.out.println(ep1);
+                    }
+
+
                     cargaDatos();
                     cargar_j_list_espectaculos();
+                    //et_ID_Espec.setVisible(true);
 
                 }
                 limpiarCampos();
@@ -341,9 +382,10 @@ public class VPrincipal_MySQL {
                 double precioDouble = Double.parseDouble(precioString);
                 String idString = String.valueOf(et_ID_Espec.getText());
                 int idInt = Integer.parseInt(idString);
-                espectaculo = new Espectaculo(idInt, et_Espectaculo.getText(), aforoInt, et_Descripcion.getText(), et_lugar.getText(), fechaDate, horarioTime, precioDouble);
+                String responsable = String.valueOf(comboBoxEmpleados.getSelectedItem());
+                espectaculo = new Espectaculo(idInt, et_Espectaculo.getText(), aforoInt, et_Descripcion.getText(), et_lugar.getText(), fechaDate, horarioTime, precioDouble, responsable);
 
-                espectaculos.add(espectaculo);
+                espectaculos.remove(espectaculo);
                 for (Espectaculo espectaculo1: espectaculos){
                     System.out.println(espectaculo1);
                 }
@@ -382,7 +424,7 @@ public class VPrincipal_MySQL {
                 Date fechaContDate = Date.valueOf(fechaContString);
 
                 empleado = new Empleado(et_dniEmp.getText(), et_emple.getText(), et_apeEmple.getText(), fechaNacDate, fechaContDate, et_NacioEmpl.getText(), et_CargoEmpl.getText());
-                empleados.add(empleado);
+                empleados.remove(empleado);
                 for (Empleado empleado1: empleados){
                     System.out.println(empleado1);
                 }
@@ -439,6 +481,21 @@ public class VPrincipal_MySQL {
                 bt_GuardarEmple.setVisible(false);
             }
         });
+
+        // Información de la base de datos:
+
+        infoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                String infoBaseDatos = new Carga().infoMySql(textAreaInfoMySql);
+
+                textAreaInfoMySql.setText(infoBaseDatos);
+
+            }
+        });
+
+
     }
 
 
@@ -456,7 +513,7 @@ public class VPrincipal_MySQL {
 
     }
 
-    public void CargaCLientes() {
+    /*public void CargaCLientes() {
         clientes = new Carga().listaClientes();
     }
 
@@ -485,12 +542,12 @@ public class VPrincipal_MySQL {
 
         listadoClientesEspectaculos.setModel(model);
 
-        /*DefaultListModel<Cliente> model = new DefaultListModel<>();
-        for (Espectaculo espectaculo : espectaculos) {
-            model.addElement(espectaculo);
-        }
-        listadoClientesEspectaculos.setModel(model);*/
-    }
+        //DefaultListModel<Cliente> model = new DefaultListModel<>();
+        //for (Espectaculo espectaculo : espectaculos) {
+        //    model.addElement(espectaculo);
+        //}
+        //listadoClientesEspectaculos.setModel(model);
+    }*/
 
     public void cargar_j_list_clientes() {
         DefaultListModel<Cliente> model = new DefaultListModel<>();
@@ -516,6 +573,27 @@ public class VPrincipal_MySQL {
         listaEspectaculos.setModel(model);
     }
 
+    /*
+
+    public void cargar_j_list_jtable_espectaculosEmpleados() {
+
+
+
+        tabla2 = new JTable();
+        tabla2.setModel(new ListaEmpleadosEspectaculosModel(new Empleado()));
+        resultadoEmpleadosEspectaculos.setViewportView(tabla2);
+
+        listaEmpleadosEspectaculos.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+
+                tabla2.setModel(new ListaEmpleadosEspectaculosModel(listaEmpleadosEspectaculos.getSelectedValue()));
+
+
+            }
+        });
+    }
+
     public void actualizarJTable() {
         ArrayList<Espectaculo> espectaculos;
         espectaculos = new Carga().listaEspectaculos();
@@ -523,6 +601,7 @@ public class VPrincipal_MySQL {
         JtableModel modelo = new JtableModel(espectaculos);
         //tabla.setModel(modelo);
     }
+*/
 
     private void limpiarCampos() {
 
@@ -549,6 +628,7 @@ public class VPrincipal_MySQL {
         et_fecha.setText("");
         et_horario.setText("");
         et_precio.setText("");
+        //mirar el combobox
 
 
     }
@@ -590,6 +670,7 @@ public class VPrincipal_MySQL {
             et_fecha.setText(String.valueOf(espectaculo.getFecha_Espec()));
             et_horario.setText(String.valueOf(espectaculo.getHorario_espec()));
             et_precio.setText(String.valueOf(espectaculo.getPrecio()));
+            comboBoxEmpleados.setSelectedItem(espectaculo.getResponsable());
         }
     }
 
