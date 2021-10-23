@@ -4,7 +4,6 @@ import Models.*;
 import com.mysql.jdbc.*;
 
 import javax.swing.*;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,7 +22,7 @@ public class Carga {
             Class.forName("com.mysql.jdbc.Driver");
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque", "root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL", "root", "several975:burn:month:War");
 
 
             Statement sentencia = (Statement) conexion.createStatement();
@@ -75,7 +74,7 @@ public class Carga {
             Class.forName("com.mysql.jdbc.Driver");
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque", "root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL", "root", "several975:burn:month:War");
 
 
             Statement sentencia = (Statement) conexion.createStatement();
@@ -128,7 +127,7 @@ public class Carga {
             Class.forName("com.mysql.jdbc.Driver");
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
 
             Statement sentencia = (Statement) conexion.createStatement();
 
@@ -177,7 +176,7 @@ public class Carga {
             Class.forName("com.mysql.jdbc.Driver");
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
 
 
             Statement sentencia = (Statement) conexion.createStatement();
@@ -226,7 +225,7 @@ public class Carga {
             Class.forName("com.mysql.jdbc.Driver");
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
 
 
             Statement sentencia = (Statement) conexion.createStatement();
@@ -274,7 +273,7 @@ public class Carga {
             Class.forName("com.mysql.jdbc.Driver");
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
 
 
             Statement sentencia = (Statement) conexion.createStatement();
@@ -308,7 +307,7 @@ public class Carga {
             Class.forName("com.mysql.jdbc.Driver");
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
 
 
             Statement sentencia = (Statement) conexion.createStatement();
@@ -343,7 +342,7 @@ public class Carga {
 
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
 
 
             Statement sentencia = (Statement) conexion.createStatement();
@@ -376,7 +375,7 @@ public class Carga {
             Class.forName("com.mysql.jdbc.Driver");
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
 
 
             Statement sentencia = (Statement) conexion.createStatement();
@@ -415,7 +414,7 @@ public class Carga {
             Class.forName("com.mysql.jdbc.Driver");
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
 
             Statement sentencia = (Statement) conexion.createStatement();
 
@@ -458,12 +457,12 @@ public class Carga {
             Class.forName("com.mysql.jdbc.Driver");
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
 
 
             Statement sentencia = (Statement) conexion.createStatement();
 
-            sql = "update espectaculos set  nombreEspec=?, aforo=?, descripcion=?, lugar=?, fecha_Espec=?, horario_Espec=?, precio=? where no_espec=?";
+            sql = "update espectaculos set  nombreEspec=?, aforo=?, descripcion=?, lugar=?, fecha_Espec=?, horario_Espec=?, precio=?, responsable=? where no_espec=?";
 
             ps = (PreparedStatement) conexion.prepareStatement(sql);
             ps.setString(1, espectaculo.getNombreEspec());
@@ -473,7 +472,8 @@ public class Carga {
             ps.setDate(5, espectaculo.getFecha_Espec());
             ps.setTime(6, espectaculo.getHorario_espec());
             ps.setDouble(7, espectaculo.getPrecio());
-            ps.setInt(8, espectaculo.getNo_Espect());
+            ps.setString(8, espectaculo.getResponsable());
+            ps.setInt(9, espectaculo.getNo_Espect());
 
 
             ps.executeUpdate();
@@ -498,7 +498,7 @@ public class Carga {
 
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
 
 
             Statement sentencia = (Statement) conexion.createStatement();
@@ -531,7 +531,7 @@ public class Carga {
             Class.forName("com.mysql.jdbc.Driver");
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
 
 
             Statement sentencia = (Statement) conexion.createStatement();
@@ -566,7 +566,7 @@ public class Carga {
             Class.forName("com.mysql.jdbc.Driver");
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
 
 
             Statement sentencia = (Statement) conexion.createStatement();
@@ -604,7 +604,7 @@ public class Carga {
             Class.forName("com.mysql.jdbc.Driver");
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
 
 
             Statement sentencia = (Statement) conexion.createStatement();
@@ -643,7 +643,7 @@ public class Carga {
 
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
 
 
             Statement sentencia = (Statement) conexion.createStatement();
@@ -682,7 +682,7 @@ public class Carga {
             //Class.forName("oracle.jdbc.driver.OracleDriver");
 
             // Establecemos la conexion con la BD
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
 
             // Preparamos la consulta
             DatabaseMetaData dbmd = (DatabaseMetaData) conexion.getMetaData();//Creamos objeto DatabaseMetaData

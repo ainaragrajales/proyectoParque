@@ -82,7 +82,7 @@ public class VPrincipal_MySQL {
 
     private JScrollPane resultadoEmpleadosEspectaculos;
     private JLabel lb_responsable;
-    private JComboBox comboBoxEmpleados;
+    private JComboBox<Empleado> comboBoxEmpleados;
     private JLabel lb_infoMySql;
     private JTextArea textAreaInfoMySql;
     private JButton infoButton;
@@ -254,7 +254,6 @@ public class VPrincipal_MySQL {
         });
 
 
-
         //Botones de la pestaña Espectaculos
         bt_AnadirEsp.addActionListener(new ActionListener() {
             @Override
@@ -271,11 +270,11 @@ public class VPrincipal_MySQL {
         bt_GuardarEspectaculo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!comprobarCamposVaciosEspectaculos()){
+                if (!comprobarCamposVaciosEspectaculos()) {
 
                     panelMensajePersonalizado("Campos Vacíos", "No puede haber campos vacíos. Comprueba todos los campos", 0);
 
-                } else if (!et_ID_Espec.isEnabled()){
+                } else if (!et_ID_Espec.isEnabled()) {
 
                     String aforoString = String.valueOf(et_aforo.getText());
                     int aforoInt = Integer.parseInt(aforoString);
@@ -291,7 +290,7 @@ public class VPrincipal_MySQL {
                     espectaculo = new Espectaculo(et_Espectaculo.getText(), aforoInt, et_Descripcion.getText(), et_lugar.getText(), fechaDate, horarioTime, precioDouble, responsable);
 
                     espectaculos.add(espectaculo);
-                    for (Espectaculo espectaculo1: espectaculos){
+                    for (Espectaculo espectaculo1 : espectaculos) {
                         System.out.println(espectaculo1);
                     }
 
@@ -315,7 +314,7 @@ public class VPrincipal_MySQL {
                     espectaculo = new Espectaculo(et_Espectaculo.getText(), aforoInt, et_Descripcion.getText(), et_lugar.getText(), fechaDate, horarioTime, precioDouble, responsable);
 
                     espectaculos.add(espectaculo);
-                    for (Espectaculo espectaculo1: espectaculos){
+                    for (Espectaculo espectaculo1 : espectaculos) {
                         System.out.println(espectaculo1);
                     }
 
@@ -329,7 +328,7 @@ public class VPrincipal_MySQL {
                     // Hago un cast del objeto seleccionado del combobox a objeto Empleado, para poder aaceder luego a su dni  y pasarselo al constructor y a la función para añadir a la table espectaculos_empleados
                     Empleado ep = (Empleado) comboBoxEmpleados.getSelectedItem();
                     System.out.println("Empleado: " + ep.getNombreEmple() + ", " + ep.getDniEmple());
-                    ;
+
 
 
                     // Añado el empleado responsable a la tabla de espectaculos_empleados, con el dni del empleado escogido del comboBox String) y el espectaculo recien añadido (int)
@@ -342,7 +341,7 @@ public class VPrincipal_MySQL {
 
                     // Saco por pantalla una lista con todos los empleados con sus espectáculos que hay en la base de datos de la tabal espectaculos_empleados
                     //espectaculoEmpleado.mostrarEspectaculosEmpleados(espectaculosEmpleados);
-                    for (Espectaculos_Empleado ep1: espectaculosEmpleados){
+                    for (Espectaculos_Empleado ep1 : espectaculosEmpleados) {
                         System.out.println(ep1);
                     }
 
@@ -386,7 +385,7 @@ public class VPrincipal_MySQL {
                 espectaculo = new Espectaculo(idInt, et_Espectaculo.getText(), aforoInt, et_Descripcion.getText(), et_lugar.getText(), fechaDate, horarioTime, precioDouble, responsable);
 
                 espectaculos.remove(espectaculo);
-                for (Espectaculo espectaculo1: espectaculos){
+                for (Espectaculo espectaculo1 : espectaculos) {
                     System.out.println(espectaculo1);
                 }
                 new Carga().eliminarEspectaculo(espectaculo);
@@ -425,7 +424,7 @@ public class VPrincipal_MySQL {
 
                 empleado = new Empleado(et_dniEmp.getText(), et_emple.getText(), et_apeEmple.getText(), fechaNacDate, fechaContDate, et_NacioEmpl.getText(), et_CargoEmpl.getText());
                 empleados.remove(empleado);
-                for (Empleado empleado1: empleados){
+                for (Empleado empleado1 : empleados) {
                     System.out.println(empleado1);
                 }
 
@@ -440,9 +439,9 @@ public class VPrincipal_MySQL {
         bt_GuardarEmple.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!comprobarCamposVaciosEmpleados()){
+                if (!comprobarCamposVaciosEmpleados()) {
                     panelMensajePersonalizado("Campos Vacíos", "No puede haber campos vacíos. Comprueba todos los campos", 0);
-                } else if (!et_dniEmp.isEnabled()){
+                } else if (!et_dniEmp.isEnabled()) {
 
                     String fechaNacString = String.valueOf(et_NacEmp.getText());
                     Date fechaNacDate = Date.valueOf(fechaNacString);
@@ -451,7 +450,7 @@ public class VPrincipal_MySQL {
 
                     empleado = new Empleado(et_dniEmp.getText(), et_emple.getText(), et_apeEmple.getText(), fechaNacDate, fechaContDate, et_NacioEmpl.getText(), et_CargoEmpl.getText());
                     empleados.add(empleado);
-                    for (Empleado empleado1: empleados){
+                    for (Empleado empleado1 : empleados) {
                         System.out.println(empleado1);
                     }
 
@@ -468,7 +467,7 @@ public class VPrincipal_MySQL {
 
                     empleado = new Empleado(et_dniEmp.getText(), et_emple.getText(), et_apeEmple.getText(), fechaNacDate, fechaContDate, et_NacioEmpl.getText(), et_CargoEmpl.getText());
                     empleados.add(empleado);
-                    for (Empleado empleado1: empleados){
+                    for (Empleado empleado1 : empleados) {
                         System.out.println(empleado1);
                     }
 
@@ -694,7 +693,8 @@ public class VPrincipal_MySQL {
         }
         return hayDato;
     }
-private boolean comprobarCamposVaciosEmpleados() {
+
+    private boolean comprobarCamposVaciosEmpleados() {
 
         boolean hayDato = true;
         ArrayList<JTextField> campos = new ArrayList<>();
@@ -710,7 +710,8 @@ private boolean comprobarCamposVaciosEmpleados() {
         }
         return hayDato;
     }
-private boolean comprobarCamposVaciosEspectaculos() {
+
+    private boolean comprobarCamposVaciosEspectaculos() {
 
         boolean hayDato = true;
         ArrayList<JTextField> campos = new ArrayList<>();

@@ -68,4 +68,17 @@ public class VPrincipal_DB4O {
     private JScrollPane resultadoClientesEspectaculos;
     private JList listaEmpleadosEspectaculos;
     private JScrollPane resultadoEmpleadosEspectaculos;
+    private JLabel lb_infoMySql;
+    private JTextArea textAreaInfoMySql;
+    private JButton infoButton;
+    private JLabel lb_responsable;
+    private JComboBox comboBoxEmpleados;
+
+    public VPrincipal_DB4O(){
+
+    }
+
+    public JPanel getVPanelPrincipal() {
+        return VPanelPrincipal;
+    }
 }

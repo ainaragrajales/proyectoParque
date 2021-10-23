@@ -1,10 +1,16 @@
+import Models.*;
+import MySQL.Carga;
+
 import javax.swing.*;
+import java.sql.Date;
+import java.sql.Time;
+import java.util.ArrayList;
 
 public class VPrincipal_SQLite {
     private JPanel VPanelPrincipal;
     private JTabbedPane tabbedPane1;
     private JPanel PestanaEspectaculos;
-    private JList listaEspectaculos;
+    private JList<Espectaculo> listaEspectaculos;
     private JButton bt_AnadirEsp;
     private JButton bt_ModEsp;
     private JButton bt_eliminar;
@@ -36,12 +42,12 @@ public class VPrincipal_SQLite {
     private JTextField campo_edad;
     private JTextField campo_dni;
     private JButton bt_guardarCli;
-    private JList list_clientes;
+    private JList<Cliente> list_clientes;
     private JButton bt_nuevoCli;
     private JButton bt_modificarCli;
     private JButton bt_eliminarCli;
     private JPanel PestanaEmpleados;
-    private JList listaEmpleados;
+    private JList<Empleado> listaEmpleados;
     private JButton bt_EmpleAnadir;
     private JButton bt_ModEmpl;
     private JButton bt_eliminarEmple;
@@ -61,11 +67,518 @@ public class VPrincipal_SQLite {
     private JTextField et_CargoEmpl;
     private JButton bt_GuardarEmple;
     private JPanel PanelEspectaculos;
-    private JList listadoClientesEspectaculos;
+    private JList<Cliente> listadoClientesEspectaculos;
     private JButton BotonAnadirEspec;
     private JButton BotonBorrarEspec;
     private JButton BotonModificarEspec;
     private JScrollPane resultadoClientesEspectaculos;
-    private JList listaEmpleadosEspectaculos;
+    private JList<Empleado> listaEmpleadosEspectaculos;
     private JScrollPane resultadoEmpleadosEspectaculos;
+    private JLabel lb_infoMySql;
+    private JTextArea textAreaInfoMySql;
+    private JButton infoButton;
+    private JLabel lb_responsable;
+    private JComboBox<Empleado> comboBoxEmpleados;
+
+
+    private ArrayList<Espectaculo> espectaculos = new ArrayList<>();
+    private ArrayList<Cliente> clientes = new ArrayList<>();
+    private ArrayList<Espectaculos_Cliente> espectaculosClientes = new ArrayList<>();
+    private ArrayList<Espectaculos_Empleado> espectaculosEmpleados = new ArrayList<>();
+    private ArrayList<Empleado> empleados = new ArrayList<>();
+
+    private JTable tabla;
+    private JTable tabla2;
+
+    private Cliente cliente;
+    private Empleado empleado;
+    private Espectaculo espectaculo;
+    private Espectaculos_Empleado espectaculoEmpleado;
+
+
+    public VPrincipal_SQLite() {
+
+        cargaDatos();
+
+        //Poner los botones de guardar en oculto
+        bt_guardarCli.setVisible(false);
+        bt_GuardarEspectaculo.setVisible(false);
+        bt_GuardarEmple.setVisible(false);
+
+        cargar_j_list_clientes();
+        cargar_j_list_empleados();
+        cargar_j_list_espectaculos();
+
+        list_clientes.addListSelectionListener(e -> actualizarClientes());
+        listaEmpleados.addListSelectionListener(e -> actualizarEmpleados());
+        listaEspectaculos.addListSelectionListener(e -> actualizarEspectaculos());
+
+        // Carga de los empleados en un model de combobox para seleccionar el responsable, luefo le paso el modelo al objeto comboBox de la ventana
+        DefaultComboBoxModel<Empleado> empleModel = new DefaultComboBoxModel<>();
+        for (Empleado empleado : empleados) {
+            empleModel.addElement(empleado);
+        }
+        comboBoxEmpleados.setModel(empleModel);
+
+        // Jlist clientes Jtable espectaculos
+        DefaultListModel<Cliente> modelClienteEspectaculo = new DefaultListModel<>();
+        for (Cliente c : clientes) {
+            modelClienteEspectaculo.addElement(c);
+        }
+        listadoClientesEspectaculos.setModel(modelClienteEspectaculo);
+        tabla = new JTable();
+        tabla.setModel(new ListaClientesEspectaculosModel(new Cliente()));
+        resultadoClientesEspectaculos.setViewportView(tabla);
+        listadoClientesEspectaculos.addListSelectionListener(e -> {
+            tabla.setModel(new ListaClientesEspectaculosModel(listadoClientesEspectaculos.getSelectedValue()));
+            System.out.println(listadoClientesEspectaculos.getSelectedValue().getEspectaculos());
+        });
+
+        // Jlist empleados Jtable espectaculos
+        DefaultListModel<Empleado> modelEmpleadoEspectaculo = new DefaultListModel<>();
+        for (Empleado e : empleados) {
+            modelEmpleadoEspectaculo.addElement(e);
+        }
+        listaEmpleadosEspectaculos.setModel(modelEmpleadoEspectaculo);
+        tabla2 = new JTable();
+        tabla2.setModel(new ListaEmpleadosEspectaculosModel(new Empleado()));
+        resultadoEmpleadosEspectaculos.setViewportView(tabla2);
+        listaEmpleadosEspectaculos.addListSelectionListener(e -> {
+            tabla2.setModel(new ListaEmpleadosEspectaculosModel(listaEmpleadosEspectaculos.getSelectedValue()));
+            System.out.println(listaEmpleadosEspectaculos.getSelectedValue().getEspectaculos());
+        });
+
+
+        //Botones pestaña espectaculos
+        bt_AnadirEsp.addActionListener(e -> {
+            et_ID_Espec.setEnabled(true);
+            //et_ID_Espec.setVisible(false);
+            limpiarCampos();
+            bt_GuardarEspectaculo.setVisible(true);
+        });
+        bt_ModEsp.addActionListener(e -> {
+            et_ID_Espec.setEnabled(false);
+            bt_GuardarEspectaculo.setVisible(true);
+        });
+        bt_eliminar.addActionListener(e -> {
+            String aforoString = String.valueOf(et_aforo.getText());
+            int aforoInt = Integer.parseInt(aforoString);
+            String fechaString = String.valueOf(et_fecha.getText());
+            Date fechaDate = Date.valueOf(fechaString);
+            String horarioString = String.valueOf(et_horario.getText());
+            Time horarioTime = Time.valueOf(horarioString);
+            String precioString = String.valueOf(et_precio.getText());
+            double precioDouble = Double.parseDouble(precioString);
+            String idString = String.valueOf(et_ID_Espec.getText());
+            int idInt = Integer.parseInt(idString);
+            String responsable = String.valueOf(comboBoxEmpleados.getSelectedItem());
+            espectaculo = new Espectaculo(idInt, et_Espectaculo.getText(), aforoInt, et_Descripcion.getText(), et_lugar.getText(), fechaDate, horarioTime, precioDouble, responsable);
+
+            espectaculos.remove(espectaculo);
+            for (Espectaculo espectaculo1 : espectaculos) {
+                System.out.println(espectaculo1);
+            }
+            new Carga().eliminarEspectaculo(espectaculo);
+            cargaDatos();
+            cargar_j_list_espectaculos();
+
+            limpiarCampos();
+            bt_GuardarEspectaculo.setVisible(false);
+        });
+        bt_GuardarEspectaculo.addActionListener(e -> {
+            if (!comprobarCamposVaciosEspectaculos()) {
+
+                panelMensajePersonalizado("Campos Vacíos", "No puede haber campos vacíos. Comprueba todos los campos", 0);
+
+            } else if (!et_ID_Espec.isEnabled()) {
+
+                String aforoString = String.valueOf(et_aforo.getText());
+                int aforoInt = Integer.parseInt(aforoString);
+                String fechaString = String.valueOf(et_fecha.getText());
+                Date fechaDate = Date.valueOf(fechaString);
+                String horarioString = String.valueOf(et_horario.getText());
+                Time horarioTime = Time.valueOf(horarioString);
+                String precioString = String.valueOf(et_precio.getText());
+                double precioDouble = Double.parseDouble(precioString);
+                String responsable = String.valueOf(comboBoxEmpleados.getSelectedItem());
+                //String idString = String.valueOf(et_ID_Espec.getText());
+                //int idInt = Integer.parseInt(idString);
+                espectaculo = new Espectaculo(et_Espectaculo.getText(), aforoInt, et_Descripcion.getText(), et_lugar.getText(), fechaDate, horarioTime, precioDouble, responsable);
+
+                espectaculos.add(espectaculo);
+                for (Espectaculo espectaculo1 : espectaculos) {
+                    System.out.println(espectaculo1);
+                }
+
+                new Carga().modificarEspectaculo(espectaculo);
+                cargaDatos();
+                cargar_j_list_espectaculos();
+
+            } else {
+                String aforoString = String.valueOf(et_aforo.getText());
+                int aforoInt = Integer.parseInt(aforoString);
+                String fechaString = String.valueOf(et_fecha.getText());
+                Date fechaDate = Date.valueOf(fechaString);
+                String horarioString = String.valueOf(et_horario.getText());
+                Time horarioTime = Time.valueOf(horarioString);
+                String precioString = String.valueOf(et_precio.getText());
+                double precioDouble = Double.parseDouble(precioString);
+                String responsable = String.valueOf(comboBoxEmpleados.getSelectedItem());
+                espectaculo = new Espectaculo(et_Espectaculo.getText(), aforoInt, et_Descripcion.getText(), et_lugar.getText(), fechaDate, horarioTime, precioDouble, responsable);
+
+                espectaculos.add(espectaculo);
+                for (Espectaculo espectaculo1 : espectaculos) {
+                    System.out.println(espectaculo1);
+                }
+
+                new Carga().espectaculoNuevo(espectaculo);
+
+                // Hayo el id máximo del ultima inserción de espectaculos y se lo paso a la tabla de espectaculos_Empleados para hacer el insert
+                int idmax = new Carga().idMaxEspectaculos();
+                // Comprobacion por pantalla del iD máximo:
+                System.out.println("\nID máximo de la tabla espectáculo es: " + idmax);
+
+                // Hago un cast del objeto seleccionado del combobox a objeto Empleado, para poder aaceder luego a su dni  y pasarselo al constructor y a la función para añadir a la table espectaculos_empleados
+                Empleado ep = (Empleado) comboBoxEmpleados.getSelectedItem();
+                System.out.println("Empleado: " + ep.getNombreEmple() + ", " + ep.getDniEmple());
+
+
+
+                // Añado el empleado responsable a la tabla de espectaculos_empleados, con el dni del empleado escogido del comboBox String) y el espectaculo recien añadido (int)
+                espectaculoEmpleado = new Espectaculos_Empleado(ep.getDniEmple(), idmax);
+                espectaculosEmpleados.add(espectaculoEmpleado);
+
+                // Añado al empleado relacionado con su espectáculo  a la tabla de espectáculos_empleados
+                new Carga().anadirEmpleadoEspectaculo(ep.getDniEmple(), idmax);
+
+
+                // Saco por pantalla una lista con todos los empleados con sus espectáculos que hay en la base de datos de la tabal espectaculos_empleados
+                //espectaculoEmpleado.mostrarEspectaculosEmpleados(espectaculosEmpleados);
+                for (Espectaculos_Empleado ep1 : espectaculosEmpleados) {
+                    System.out.println(ep1);
+                }
+
+
+                cargaDatos();
+                cargar_j_list_espectaculos();
+                //et_ID_Espec.setVisible(true);
+            }
+            limpiarCampos();
+            bt_GuardarEspectaculo.setVisible(false);
+        });
+
+        //Botones pestaña Clientes
+        bt_nuevoCli.addActionListener(e -> {
+            campo_dni.setEnabled(true);
+            limpiarCampos();
+            bt_guardarCli.setVisible(true);
+        });
+        bt_modificarCli.addActionListener(e -> {
+            campo_dni.setEnabled(false);
+            bt_guardarCli.setVisible(true);
+        });
+        bt_eliminarCli.addActionListener(e -> {
+            //Añadir mensaje de confirmación
+
+            String edadString = String.valueOf(campo_edad.getText());
+            int edadInt = Integer.parseInt(edadString);
+            cliente = new Cliente(campo_dni.getText(), campo_nombre.getText(), campo_apellido.getText(), edadInt);
+            clientes.remove(cliente);
+            for (Cliente cliente1 : clientes) {
+                System.out.println(cliente1);
+            }
+            new Carga().eliminarCliente(cliente);
+            cargaDatos();
+            cargar_j_list_clientes();
+
+
+            limpiarCampos();
+            bt_guardarCli.setVisible(false);
+        });
+        bt_guardarCli.addActionListener(e -> {
+            if (!comprobarCamposVaciosClientes()) {
+                panelMensajePersonalizado("Campos Vacíos", "No puede haber campos vacíos. Comprueba todos los campos", 0);
+            } else if (!campo_dni.isEnabled()) {
+                String edadString = String.valueOf(campo_edad.getText());
+                int edadInt = Integer.parseInt(edadString);
+                cliente = new Cliente(campo_dni.getText(), campo_nombre.getText(), campo_apellido.getText(), edadInt);
+                clientes.add(cliente);
+                for (Cliente cliente1 : clientes) {
+                    System.out.println(cliente1);
+                }
+                new Carga().modificarCliente(cliente);
+                cargaDatos();
+                cargar_j_list_clientes();
+            } else {
+                String edadString = String.valueOf(campo_edad.getText());
+                int edadInt = Integer.parseInt(edadString);
+                cliente = new Cliente(campo_dni.getText(), campo_nombre.getText(), campo_apellido.getText(), edadInt);
+                clientes.add(cliente);
+                for (Cliente cliente1 : clientes) {
+                    System.out.println(cliente1);
+                }
+                new Carga().clienteNuevo(cliente);
+                cargaDatos();
+                cargar_j_list_clientes();
+
+            }
+            //new Carga().listaClientesEspectaculo();
+            limpiarCampos();
+            bt_guardarCli.setVisible(false);
+        });
+
+
+        //Botones pestaña empleados
+        bt_EmpleAnadir.addActionListener(e -> {
+            et_dniEmp.setEnabled(true);
+            limpiarCampos();
+            bt_GuardarEmple.setVisible(true);
+        });
+        bt_ModEmpl.addActionListener(e -> {
+            et_dniEmp.setEnabled(false);
+            bt_GuardarEmple.setVisible(true);
+        });
+        bt_eliminarEmple.addActionListener(e -> {
+            String fechaNacString = String.valueOf(et_NacEmp.getText());
+            Date fechaNacDate = Date.valueOf(fechaNacString);
+            String fechaContString = String.valueOf(et_fechaContrEmp.getText());
+            Date fechaContDate = Date.valueOf(fechaContString);
+
+            empleado = new Empleado(et_dniEmp.getText(), et_emple.getText(), et_apeEmple.getText(), fechaNacDate, fechaContDate, et_NacioEmpl.getText(), et_CargoEmpl.getText());
+            empleados.remove(empleado);
+            for (Empleado empleado1 : empleados) {
+                System.out.println(empleado1);
+            }
+
+            new Carga().eliminarEmpleado(empleado);
+            cargaDatos();
+            cargar_j_list_empleados();
+
+            limpiarCampos();
+            bt_GuardarEmple.setVisible(false);
+        });
+        bt_GuardarEmple.addActionListener(e -> {
+            if (!comprobarCamposVaciosEmpleados()) {
+                panelMensajePersonalizado("Campos Vacíos", "No puede haber campos vacíos. Comprueba todos los campos", 0);
+            } else if (!et_dniEmp.isEnabled()) {
+
+                String fechaNacString = String.valueOf(et_NacEmp.getText());
+                Date fechaNacDate = Date.valueOf(fechaNacString);
+                String fechaContString = String.valueOf(et_fechaContrEmp.getText());
+                Date fechaContDate = Date.valueOf(fechaContString);
+
+                empleado = new Empleado(et_dniEmp.getText(), et_emple.getText(), et_apeEmple.getText(), fechaNacDate, fechaContDate, et_NacioEmpl.getText(), et_CargoEmpl.getText());
+                empleados.add(empleado);
+                for (Empleado empleado1 : empleados) {
+                    System.out.println(empleado1);
+                }
+
+                new Carga().modificarEmpleado(empleado);
+                cargaDatos();
+                cargar_j_list_empleados();
+
+
+            } else {
+                String fechaNacString = String.valueOf(et_NacEmp.getText());
+                Date fechaNacDate = Date.valueOf(fechaNacString);
+                String fechaContString = String.valueOf(et_fechaContrEmp.getText());
+                Date fechaContDate = Date.valueOf(fechaContString);
+
+                empleado = new Empleado(et_dniEmp.getText(), et_emple.getText(), et_apeEmple.getText(), fechaNacDate, fechaContDate, et_NacioEmpl.getText(), et_CargoEmpl.getText());
+                empleados.add(empleado);
+                for (Empleado empleado1 : empleados) {
+                    System.out.println(empleado1);
+                }
+
+                new Carga().empleadoNuevo(empleado);
+                cargaDatos();
+                cargar_j_list_empleados();
+
+            }
+            limpiarCampos();
+            bt_GuardarEmple.setVisible(false);
+        });
+
+        //Boton pestaña información de la base de datos
+        infoButton.addActionListener(e -> {
+            String infoBaseDatos = new Carga().infoMySql(textAreaInfoMySql);
+
+            textAreaInfoMySql.setText(infoBaseDatos);
+        });
+    }
+
+
+    public void cargaDatos() {
+        empleados = new SQLite.Carga().listaEmpleadosSQLite();
+
+        espectaculos = new SQLite.Carga().listaEspectaculosSQLite();
+
+        clientes = new SQLite.Carga().listaClientesSQLite();
+
+        espectaculosClientes = new SQLite.Carga().listaClientesEspectaculosSQLite();
+
+        espectaculosEmpleados = new SQLite.Carga().listaEmpleadosEspetaculosSQLite();
+    }
+
+    private void cargar_j_list_clientes() {
+        DefaultListModel<Cliente> model = new DefaultListModel<>();
+        for (Cliente cliente : clientes) {
+            model.addElement(cliente);
+        }
+        list_clientes.setModel(model);
+    }
+
+    private void cargar_j_list_empleados() {
+        DefaultListModel<Empleado> model = new DefaultListModel<>();
+        for (Empleado empleado : empleados) {
+            model.addElement(empleado);
+        }
+        listaEmpleados.setModel(model);
+    }
+
+    private void cargar_j_list_espectaculos() {
+        DefaultListModel<Espectaculo> model = new DefaultListModel<>();
+        for (Espectaculo espectaculo : espectaculos) {
+            model.addElement(espectaculo);
+        }
+        listaEspectaculos.setModel(model);
+    }
+
+    public void actualizarClientes() {
+        Cliente cliente = list_clientes.getSelectedValue();
+
+        if (cliente != null) {
+            campo_dni.setText(cliente.getDni());
+            campo_nombre.setText(cliente.getNombre());
+            campo_apellido.setText(cliente.getApellidos());
+            campo_edad.setText(String.valueOf(cliente.getEdad()));
+        }
+    }
+
+    public void actualizarEmpleados() {
+        Empleado empleado = listaEmpleados.getSelectedValue();
+
+        if (empleado != null) {
+            et_dniEmp.setText(empleado.getDniEmple());
+            et_nombre.setText(empleado.getNombreEmple());
+            et_apeEmple.setText(empleado.getApeEmple());
+            et_NacEmp.setText(String.valueOf(empleado.getFechaNac()));
+            et_fechaContrEmp.setText(String.valueOf(empleado.getFechaContr()));
+            et_NacioEmpl.setText(String.valueOf(empleado.getNacionalidad()));
+            et_CargoEmpl.setText(String.valueOf(empleado.getCargo()));
+        }
+    }
+
+    public void actualizarEspectaculos() {
+        Espectaculo espectaculo = listaEspectaculos.getSelectedValue();
+
+        if (espectaculo != null) {
+            et_ID_Espec.setText(String.valueOf(espectaculo.getNo_Espect()));
+            et_Espectaculo.setText(espectaculo.getNombreEspec());
+            et_aforo.setText(String.valueOf(espectaculo.getAforo()));
+            et_Descripcion.setText(espectaculo.getDescripcion());
+            et_lugar.setText(espectaculo.getLugar());
+            et_fecha.setText(String.valueOf(espectaculo.getFecha_Espec()));
+            et_horario.setText(String.valueOf(espectaculo.getHorario_espec()));
+            et_precio.setText(String.valueOf(espectaculo.getPrecio()));
+            comboBoxEmpleados.setSelectedItem(espectaculo.getResponsable());
+        }
+    }
+
+    private void limpiarCampos() {
+
+        campo_edad.setText("");
+        campo_dni.setText("");
+        campo_apellido.setText("");
+        campo_nombre.setText("");
+
+
+        et_dniEmp.setText("");
+        et_nombre.setText("");
+        et_apeEmple.setText("");
+        et_NacEmp.setText("");
+        et_fechaContrEmp.setText("");
+        et_NacioEmpl.setText("");
+        et_CargoEmpl.setText("");
+
+
+        et_ID_Espec.setText("");
+        et_Espectaculo.setText("");
+        et_aforo.setText("");
+        et_Descripcion.setText("");
+        et_lugar.setText("");
+        et_fecha.setText("");
+        et_horario.setText("");
+        et_precio.setText("");
+        //mirar el combobox
+
+    }
+
+    private boolean comprobarCamposVaciosEspectaculos() {
+        boolean hayDato = true;
+        ArrayList<JTextField> campos = new ArrayList<>();
+        campos.add(et_ID_Espec);
+        campos.add(et_Espectaculo);
+        campos.add(et_aforo);
+        campos.add(et_Descripcion);
+        campos.add(et_lugar);
+        campos.add(et_fecha);
+        campos.add(et_horario);
+        campos.add(et_precio);
+
+        for (JTextField campo : campos) {
+            if (campo.getText().equalsIgnoreCase("")) {
+                hayDato = false;
+            }
+        }
+        return hayDato;
+    }
+
+    private boolean comprobarCamposVaciosClientes() {
+
+        boolean hayDato = true;
+        ArrayList<JTextField> campos = new ArrayList<>();
+        campos.add(campo_dni);
+        campos.add(campo_nombre);
+        campos.add(campo_apellido);
+        campos.add(campo_edad);
+
+        for (JTextField campo : campos) {
+            if (campo.getText().equalsIgnoreCase("")) {
+                hayDato = false;
+            }
+        }
+        return hayDato;
+    }
+
+    private boolean comprobarCamposVaciosEmpleados() {
+
+        boolean hayDato = true;
+        ArrayList<JTextField> campos = new ArrayList<>();
+        campos.add(campo_dni);
+        campos.add(campo_nombre);
+        campos.add(campo_apellido);
+        campos.add(campo_edad);
+
+        for (JTextField campo : campos) {
+            if (campo.getText().equalsIgnoreCase("")) {
+                hayDato = false;
+            }
+        }
+        return hayDato;
+    }
+
+    public void panelMensajePersonalizado(String titulo, String mensaje, int tipo) {
+        JButton okButton = new JButton("OK");
+        okButton.setFocusPainted(false);
+        Object[] options = {okButton};
+        final JOptionPane pane = new JOptionPane(mensaje, tipo, JOptionPane.YES_NO_OPTION, null, options);
+        JDialog dialog = pane.createDialog(titulo);
+        okButton.addActionListener(e -> dialog.dispose());
+        dialog.setVisible(true);
+    }
+
+    public JPanel getVPanelPrincipal() {
+        return VPanelPrincipal;
+    }
 }

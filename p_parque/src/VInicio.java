@@ -3,14 +3,19 @@ import MySQL.Carga;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class VInicio {
 
     private JPanel VPanelInicio;
-    private JButton clientesButton;
-    private JButton empleadosButton;
-    private JButton espectaculosButton;
+    private JButton MySqlButton;
+    private JButton infoMySqlButton;
+    private JButton DB4oButton;
+    private JButton infoDB4oButton;
+    private JButton SQLiteButton;
+    private JButton infoSQLiteButton;
 
     // Para comprobar si la ventana ya está abierta
     public static boolean ventanaAbierta = false;
@@ -18,7 +23,7 @@ public class VInicio {
     // Cargo en ArrayList las tablas de espectaculos, clientes y empleados y le paso los datos que recojo de la Base de datos
     ArrayList<Espectaculo> espectaculos = new ArrayList<>();
     ArrayList<Empleado> empleados = new ArrayList<>();
-   final static ArrayList<Cliente> clientes = new Carga().listaClientes();
+    ArrayList<Cliente> clientes = new Carga().listaClientes();
     ArrayList<Espectaculos_Cliente> espectaculosClientes = new ArrayList<>();
     ArrayList<Espectaculos_Empleado> espectaculosEmpleados = new ArrayList<>();
 
@@ -29,7 +34,7 @@ public class VInicio {
 
         espectaculos = new Carga().listaEspectaculos();
         empleados = new Carga().listaEmpleados();
-        //clientes = new Carga().listaClientes();
+        clientes = new Carga().listaClientes();
         espectaculosClientes = new Carga().listaClientesEspectaculo();
         espectaculosEmpleados = new Carga().listaEmpleadosEspectaculo();
 
@@ -54,7 +59,7 @@ public class VInicio {
 
         cargar_tablas_relaciones();
 
-        espectaculosButton.addActionListener(e -> {
+        MySqlButton.addActionListener(e -> {
             if (!ventanaAbierta) {
                 JFrame frame = new JFrame("Parque My Sql");
                 //VPrincipal_MySQL vp = new VPrincipal_MySQL(clientes);
@@ -69,6 +74,32 @@ public class VInicio {
                 JOptionPane.showMessageDialog(null, "La ventana Principal ya esta abierta!!!");
             }
            // abrirVPrincipal();
+        });
+        DB4oButton.addActionListener(e -> {
+//if(!ventanaAbierta)
+            JFrame frame = new JFrame("Parque DB4o");
+            frame.setContentPane((new VPrincipal_DB4O()).getVPanelPrincipal());
+            frame.setMinimumSize(new Dimension(1200, 600)); // Lo ajusto a un tamaño para que se vea bien
+            frame.setLocationRelativeTo(null); // Saca la ventana al centro
+            frame.pack();
+            frame.setVisible(true);
+            //ventanaAbierta = true;
+
+            //else{ JOptionPane.showMessageDialog(null, "La ventana Principal ya esta abierta!!!"); }
+
+        });
+        SQLiteButton.addActionListener(e -> {
+            //if(!ventanaAbierta)
+            JFrame frame = new JFrame("Parque SQLite");
+            frame.setContentPane((new VPrincipal_SQLite()).getVPanelPrincipal());
+            frame.setMinimumSize(new Dimension(1200, 600)); // Lo ajusto a un tamaño para que se vea bien
+            frame.setLocationRelativeTo(null); // Saca la ventana al centro
+            frame.pack();
+            frame.setVisible(true);
+            //ventanaAbierta = true;
+
+            //else{ JOptionPane.showMessageDialog(null, "La ventana Principal ya esta abierta!!!"); }
+
         });
     }
 
