@@ -1,5 +1,7 @@
 package Models;
 
+import java.util.ArrayList;
+
 public class Espectaculos_Cliente {
 
     // Atributos
@@ -15,6 +17,11 @@ public class Espectaculos_Cliente {
 
     public Espectaculos_Cliente(int idEspecCli, String cliente, int espectaculo) {
         this.idEspecCli = idEspecCli;
+        this.cliente = cliente;
+        this.espectaculo = espectaculo;
+    }
+
+    public Espectaculos_Cliente(String cliente, int espectaculo) {
         this.cliente = cliente;
         this.espectaculo = espectaculo;
     }
@@ -56,5 +63,16 @@ public class Espectaculos_Cliente {
                 ", cliente='" + cliente + '\'' +
                 ", espectaculo=" + espectaculo +
                 '}';
+    }
+
+    public void mostrarEspectaculosCliente(ArrayList<Espectaculos_Cliente> espectaculosClientes){
+        System.out.println("\nDatos del arrayList 'EspectaculosClientes':\n");
+        System.out.format("%-5s%-15s%-20s\n","ID","ID_CLIENTE","ID_ESPECTACULO");
+
+        for (Espectaculos_Cliente ec : espectaculosClientes) {
+            System.out.format("%-5d%-15s%-20d\n", ec.getIdEspecCli(), ec.getCliente(), ec.getEspectaculo());
+        }
+
+
     }
 }

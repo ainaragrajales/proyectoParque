@@ -15,6 +15,10 @@ public class Cliente {
 
     private ArrayList<Espectaculo> espectaculos= new ArrayList<>();
 
+
+    //Para SQLite
+    private ArrayList<EspectaculoSQLite> espectaculosSQLite= new ArrayList<>();
+
     public Cliente() {
     }
 
@@ -72,6 +76,15 @@ public class Cliente {
     public void setEspectaculos(ArrayList<Espectaculo> espectaculos) {
         this.espectaculos = espectaculos;
     }
+
+    public ArrayList<EspectaculoSQLite> getEspectaculosSQLite() {
+        return espectaculosSQLite;
+    }
+
+    public void setEspectaculosSQLite(ArrayList<EspectaculoSQLite> espectaculosSQLite) {
+        this.espectaculosSQLite = espectaculosSQLite;
+    }
+
 
     @Override
     public boolean equals(Object o) {

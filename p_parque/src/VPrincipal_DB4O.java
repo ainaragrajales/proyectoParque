@@ -62,9 +62,6 @@ public class VPrincipal_DB4O {
     private JButton bt_GuardarEmple;
     private JPanel PanelEspectaculos;
     private JList listadoClientesEspectaculos;
-    private JButton BotonAnadirEspec;
-    private JButton BotonBorrarEspec;
-    private JButton BotonModificarEspec;
     private JScrollPane resultadoClientesEspectaculos;
     private JList listaEmpleadosEspectaculos;
     private JScrollPane resultadoEmpleadosEspectaculos;
@@ -73,6 +70,11 @@ public class VPrincipal_DB4O {
     private JButton infoButton;
     private JLabel lb_responsable;
     private JComboBox comboBoxEmpleados;
+    private JButton bt_salir;
+    private JButton bt_AnadirEspecCliente;
+    private JButton bt_BorrarEspecCliente;
+    private JComboBox comboBoxEspectaculos;
+    private JButton bt_GuardarEspecCliente;
 
     public VPrincipal_DB4O(){
 

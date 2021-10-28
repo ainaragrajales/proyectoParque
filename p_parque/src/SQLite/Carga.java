@@ -1,14 +1,10 @@
 package SQLite;
 
 import Models.*;
-import com.mysql.jdbc.Connection;
-import com.mysql.jdbc.PreparedStatement;
+
 
 import javax.swing.*;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class Carga {
@@ -21,7 +17,7 @@ public class Carga {
         try {
             Class.forName("org.sqlite.JDBC");
 
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
+            Connection conexion = DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
 
             Statement sentencia = conexion.createStatement();
 
@@ -66,76 +62,65 @@ public class Carga {
         return clientes;
     }
 
-    public ArrayList<Empleado> listaEmpleadosSQLite() {
-        ArrayList<Empleado> empleados = new ArrayList<>();
+    public ArrayList<EmpleadoSQLite> listaEmpleadosSQLite() {
+        ArrayList<EmpleadoSQLite> empleadosSQlite = new ArrayList<>();
 
         try {
             Class.forName("org.sqlite.JDBC");
 
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
+            Connection conexion = DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
 
             Statement sentencia = conexion.createStatement();
-
-            //sentencia.execute("CREATE TABLE pruebas (id int primary key, nombre varchar)");
-
-            /*String nombre = "Prueba 1";
-            for (int i = 0; i < 10; i++) {
-                sentencia.execute("INSERT INTO pruebas (id, nombre) values (" + i + ", " + nombre + ")");
-            }*/
 
             ResultSet resul = sentencia.executeQuery("SELECT * FROM empleados");
 
             while (resul.next()) {
                 // Creo un objeto 'espectaculo' vacío
-                Empleado empleado = new Empleado();
+                EmpleadoSQLite empleadoSQLite = new EmpleadoSQLite();
+
 
                 // voy pasáandole los atributos al objeto 'espectaculo'
-                empleado.setDniEmple(resul.getString(1));
-                empleado.setNombreEmple(resul.getString(2));
-                empleado.setApeEmple(resul.getString(3));
-                empleado.setFechaNac(resul.getDate(4));
-                empleado.setFechaContr(resul.getDate(5));
-                empleado.setNacionalidad(resul.getString(6));
-                empleado.setCargo(resul.getString(7));
+                empleadoSQLite.setDniEmple(resul.getString(1));
+                empleadoSQLite.setNombreEmple(resul.getString(2));
+                empleadoSQLite.setApeEmple(resul.getString(3));
+                empleadoSQLite.setFechaNac(resul.getString(4));
+                empleadoSQLite.setFechaContr(resul.getString(5));
+                empleadoSQLite.setNacionalidad(resul.getString(6));
+                empleadoSQLite.setCargo(resul.getString(7));
 
 
                 // Añado el objeto 'espectaculo' al ArrayList espectaculos
-                empleados.add(empleado);
+                empleadosSQlite.add(empleadoSQLite);
             }
 
             resul.close();
             sentencia.close();
             conexion.close();
 
-        } catch (SQLException | ClassNotFoundException throwables) {
+        } catch (SQLException throwables) {
             throwables.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
 
-        return empleados;
+        return empleadosSQlite;
     }
 
-    public ArrayList<Espectaculo> listaEspectaculosSQLite() {
-        ArrayList<Espectaculo> espectaculos = new ArrayList<>();
+    public ArrayList<EspectaculoSQLite> listaEspectaculosSQLite() {
+        ArrayList<EspectaculoSQLite> espectaculos = new ArrayList<>();
 
         try {
             Class.forName("org.sqlite.JDBC");
 
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
+            Connection conexion = DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
 
             Statement sentencia = conexion.createStatement();
-
-            //sentencia.execute("CREATE TABLE pruebas (id int primary key, nombre varchar)");
-
-            /*String nombre = "Prueba 1";
-            for (int i = 0; i < 10; i++) {
-                sentencia.execute("INSERT INTO pruebas (id, nombre) values (" + i + ", " + nombre + ")");
-            }*/
 
             ResultSet resul = sentencia.executeQuery("SELECT * FROM espectaculos");
 
             while (resul.next()) {
                 // Creo un objeto 'espectaculo' vacío
-                Espectaculo espectaculo = new Espectaculo();
+                EspectaculoSQLite espectaculo = new EspectaculoSQLite();
 
                 // voy pasáandole los atributos al objeto 'espectaculo'
                 espectaculo.setNo_Espect(resul.getInt(1));
@@ -143,8 +128,8 @@ public class Carga {
                 espectaculo.setAforo(resul.getInt(3));
                 espectaculo.setDescripcion(resul.getString(4));
                 espectaculo.setLugar(resul.getString(5));
-                espectaculo.setFecha_Espec(resul.getDate(6));
-                espectaculo.setHorario_espec(resul.getTime(7));
+                espectaculo.setFecha_Espec(resul.getString(6));
+                espectaculo.setHorario_espec(resul.getString(7));
                 espectaculo.setPrecio(resul.getInt(8));
 
 
@@ -169,18 +154,11 @@ public class Carga {
         try {
             Class.forName("org.sqlite.JDBC");
 
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
+            Connection conexion = DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
 
             Statement sentencia = conexion.createStatement();
 
-            //sentencia.execute("CREATE TABLE pruebas (id int primary key, nombre varchar)");
-
-            /*String nombre = "Prueba 1";
-            for (int i = 0; i < 10; i++) {
-                sentencia.execute("INSERT INTO pruebas (id, nombre) values (" + i + ", " + nombre + ")");
-            }*/
-
-            ResultSet resul = sentencia.executeQuery("SELECT * FROM clientes");
+            ResultSet resul = sentencia.executeQuery("SELECT * FROM Espectaculos_Clientes");
 
             while (resul.next()) {
                 // Creo un objeto 'espectaculo' vacío
@@ -218,18 +196,11 @@ public class Carga {
         try {
             Class.forName("org.sqlite.JDBC");
 
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
+            Connection conexion = DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
 
             Statement sentencia = conexion.createStatement();
 
-            //sentencia.execute("CREATE TABLE pruebas (id int primary key, nombre varchar)");
-
-            /*String nombre = "Prueba 1";
-            for (int i = 0; i < 10; i++) {
-                sentencia.execute("INSERT INTO pruebas (id, nombre) values (" + i + ", " + nombre + ")");
-            }*/
-
-            ResultSet resul = sentencia.executeQuery("SELECT * FROM clientes");
+            ResultSet resul = sentencia.executeQuery("SELECT * FROM Espectaculos_Empleados");
 
             while (resul.next()) {
                 // Creo un objeto 'espectaculo' vacío
@@ -260,7 +231,7 @@ public class Carga {
         return espectaculosEmpleados;
     }
 
-    public void ClienteNuevo(Cliente cliente) {
+    public void clienteNuevo(Cliente cliente) {
 
         PreparedStatement ps;
         String sql;
@@ -268,12 +239,12 @@ public class Carga {
         try {
             Class.forName("org.sqlite.JDBC");
 
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
+            Connection conexion = DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
 
             Statement sentencia = conexion.createStatement();
             sql = "insert into clientes(dniCli, nombreCli, ApesCli, edad) values (?,?,?,?)";
 
-            ps = (PreparedStatement) conexion.prepareStatement(sql);
+            ps =  conexion.prepareStatement(sql);
             ps.setString(1, cliente.getDni());
             ps.setString(2, cliente.getNombre());
             ps.setString(3, cliente.getApellidos());
@@ -292,7 +263,7 @@ public class Carga {
         }
     }
 
-    public void EmpleadoNuevo(Empleado empleado) {
+    public void empleadoNuevo(EmpleadoSQLite empleado) {
 
         PreparedStatement ps;
         String sql;
@@ -300,17 +271,17 @@ public class Carga {
         try {
             Class.forName("org.sqlite.JDBC");
 
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
+            Connection conexion =  DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
 
             Statement sentencia = conexion.createStatement();
             sql = "insert into empleados(dniEmple, nombreEmple, ApeEmple, f_Nac_Emple, f_Cont_Emple, nacionalidad, cargo) values (?,?,?,?,?,?,?)";
 
-            ps = (PreparedStatement) conexion.prepareStatement(sql);
+            ps =  conexion.prepareStatement(sql);
             ps.setString(1, empleado.getDniEmple());
             ps.setString(2, empleado.getNombreEmple());
             ps.setString(3, empleado.getApeEmple());
-            ps.setDate(4, empleado.getFechaNac());
-            ps.setDate(5, empleado.getFechaContr());
+            ps.setString(4, empleado.getFechaNac());
+            ps.setString(5, empleado.getFechaContr());
             ps.setString(6, empleado.getNacionalidad());
             ps.setString(7, empleado.getCargo());
             ps.executeUpdate();
@@ -326,7 +297,7 @@ public class Carga {
         }
     }
 
-    public void EspectaculoNuevo(Espectaculo espectaculo) {
+    public void espectaculoNuevo(EspectaculoSQLite espectaculo) {
 
         PreparedStatement ps;
         String sql;
@@ -334,19 +305,19 @@ public class Carga {
         try {
             Class.forName("org.sqlite.JDBC");
 
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
+            Connection conexion =  DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
 
             Statement sentencia = conexion.createStatement();
             sql = "insert into espectaculos(no_espec, nombreEspec, aforo, descripcion, lugar, fecha_Espec, horario_Espec, precio) values (?,?,?,?,?,?,?,?)";
 
-            ps = (PreparedStatement) conexion.prepareStatement(sql);
+            ps =  conexion.prepareStatement(sql);
             ps.setInt(1, espectaculo.getNo_Espect());
             ps.setString(2, espectaculo.getNombreEspec());
             ps.setInt(3, espectaculo.getAforo());
             ps.setString(4, espectaculo.getDescripcion());
             ps.setString(5, espectaculo.getLugar());
-            ps.setDate(6, espectaculo.getFecha_Espec());
-            ps.setTime(7, espectaculo.getHorario_espec());
+            ps.setString(6, espectaculo.getFecha_Espec());
+            ps.setString(7, espectaculo.getHorario_espec());
             ps.setDouble(8, espectaculo.getPrecio());
 
             ps.executeUpdate();
@@ -369,12 +340,12 @@ public class Carga {
         try {
             Class.forName("org.sqlite.JDBC");
 
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
+            Connection conexion =  DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
 
             Statement sentencia = conexion.createStatement();
             sql = "update clientes set  nombreCli=?, ApesCli=?, edad=? where dniCli=?";
 
-            ps = (PreparedStatement) conexion.prepareStatement(sql);
+            ps =  conexion.prepareStatement(sql);
             ps.setString(1, cliente.getNombre());
             ps.setString(2, cliente.getApellidos());
             ps.setInt(3, cliente.getEdad());
@@ -393,23 +364,23 @@ public class Carga {
         }
     }
 
-    public void modificarEmpleado(Empleado empleado){
+    public void modificarEmpleado(EmpleadoSQLite empleado){
         PreparedStatement ps;
         String sql;
 
         try {
             Class.forName("org.sqlite.JDBC");
 
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
+            Connection conexion =  DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
 
             Statement sentencia = conexion.createStatement();
             sql = "update empleados set  nombreEmple=?, ApeEmple=?, f_Nac_Emple=?, lugar=?, f_Cont_Emple=?, nacionalidad=?, cargo=? where dniEmple=?";
 
-            ps = (PreparedStatement) conexion.prepareStatement(sql);
+            ps =  conexion.prepareStatement(sql);
             ps.setString(1, empleado.getNombreEmple());
             ps.setString(2, empleado.getApeEmple());
-            ps.setDate(3, empleado.getFechaNac());
-            ps.setDate(4, empleado.getFechaContr());
+            ps.setString(3, empleado.getFechaNac());
+            ps.setString(4, empleado.getFechaContr());
             ps.setString(5, empleado.getNacionalidad());
             ps.setString(6, empleado.getCargo());
             ps.setString(7, empleado.getDniEmple());
@@ -427,25 +398,25 @@ public class Carga {
         }
     }
 
-    public void modificarEspectaculo(Espectaculo espectaculo){
+    public void modificarEspectaculo(EspectaculoSQLite espectaculo){
         PreparedStatement ps;
         String sql;
 
         try {
             Class.forName("org.sqlite.JDBC");
 
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
+            Connection conexion =  DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
 
             Statement sentencia = conexion.createStatement();
             sql = "update espectaculos set  nombreEspec=?, aforo=?, descripcion=?, lugar=?, fecha_Espec=?, horario_Espec=?, precio=?, responsable=? where no_espec=?";
 
-            ps = (PreparedStatement) conexion.prepareStatement(sql);
+            ps =  conexion.prepareStatement(sql);
             ps.setString(1, espectaculo.getNombreEspec());
             ps.setInt(2, espectaculo.getAforo());
             ps.setString(3, espectaculo.getDescripcion());
             ps.setString(4, espectaculo.getLugar());
-            ps.setDate(5, espectaculo.getFecha_Espec());
-            ps.setTime(6, espectaculo.getHorario_espec());
+            ps.setString(5, espectaculo.getFecha_Espec());
+            ps.setString(6, espectaculo.getHorario_espec());
             ps.setDouble(7, espectaculo.getPrecio());
             ps.setString(8, espectaculo.getResponsable());
             ps.setInt(9, espectaculo.getNo_Espect());
@@ -469,12 +440,12 @@ public class Carga {
         try {
             Class.forName("org.sqlite.JDBC");
 
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
+            Connection conexion =  DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
 
             Statement sentencia = conexion.createStatement();
             sql = "delete from clientes where dniCli=?";
 
-            ps = (PreparedStatement) conexion.prepareStatement(sql);
+            ps =  conexion.prepareStatement(sql);
             ps.setString(1, cliente.getDni());
 
             ps.executeUpdate();
@@ -490,19 +461,19 @@ public class Carga {
         }
     }
 
-    public void eliminarEmpleado(Empleado empleado){
+    public void eliminarEmpleado(EmpleadoSQLite empleado){
         PreparedStatement ps;
         String sql;
 
         try {
             Class.forName("org.sqlite.JDBC");
 
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
+            Connection conexion =  DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
 
             Statement sentencia = conexion.createStatement();
             sql = "delete from empleados where dniEmple=?";
 
-            ps = (PreparedStatement) conexion.prepareStatement(sql);
+            ps =  conexion.prepareStatement(sql);
             ps.setString(1, empleado.getDniEmple());
 
 
@@ -519,19 +490,19 @@ public class Carga {
         }
     }
 
-    public void eliminarEspectaculo(Espectaculo espectaculo){
+    public void eliminarEspectaculo(EspectaculoSQLite espectaculo){
         PreparedStatement ps;
         String sql;
 
         try {
             Class.forName("org.sqlite.JDBC");
 
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
+            Connection conexion =  DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
 
             Statement sentencia = conexion.createStatement();
             sql = "delete from espectaculos where no_espec=?";
 
-            ps = (PreparedStatement) conexion.prepareStatement(sql);
+            ps =  conexion.prepareStatement(sql);
             ps.setInt(1, espectaculo.getNo_Espect());
 
 
@@ -548,18 +519,18 @@ public class Carga {
         }
     }
 
-    /*
+
     public int idMaxEspectaculos() {
 
-        Espectaculo espectaculo = null;
+        EspectaculoSQLite espectaculo = null;
         String sql = "SELECT * FROM clientes";
 
         try {
             //Cargar el driver
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("org.sqlite.JDBC");
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque","root", "several975:burn:month:War");
+            Connection conexion = DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
 
             Statement sentencia = (Statement) conexion.createStatement();
 
@@ -568,7 +539,7 @@ public class Carga {
 
             while (resul.next()) {
                 // Creo un objeto 'espectaculo' vacío
-                espectaculo = new Espectaculo((String.valueOf(resul.getInt(1))));
+                espectaculo = new EspectaculoSQLite((String.valueOf(resul.getInt(1))));
 
                 // voy pasáandole los atributos al objeto 'espectaculo'
                 espectaculo.setNo_Espect(resul.getInt(1));
@@ -592,25 +563,25 @@ public class Carga {
         // La función me devuelve el ArrayList de espectaculos
         return espectaculo.getNo_Espect();
     }
-     */
 
-    /*
+
+
     public void anadirEmpleadoEspectaculo( String dniEmple,int idEspectaculo) {
 
         java.sql.PreparedStatement ps;
         String sql;
 
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("org.sqlite.JDBC");
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque","root", "several975:burn:month:War");
+            Connection conexion = DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
 
 
-            Statement sentencia = (Statement) conexion.createStatement();
+            Statement sentencia = conexion.createStatement();
             sql = "insert into Espectaculos_Empleados(Empleado, Espectaculo) values (?,?)";
 
-            ps = (java.sql.PreparedStatement) conexion.prepareStatement(sql);
+            ps = conexion.prepareStatement(sql);
 
             ps.setString(1, dniEmple);
 
@@ -628,9 +599,9 @@ public class Carga {
         }
 
     }
-     */
 
-    /*
+
+
     public String infoMySql(JTextArea infoJtextArea) {
 
         String info = "";
@@ -640,14 +611,14 @@ public class Carga {
 
             //Cargar el driver
 
-            Class.forName("com.mysql.jdbc.Driver");
-            //Class.forName("oracle.jdbc.driver.OracleDriver");
+            Class.forName("org.sqlite.JDBC");
 
-            // Establecemos la conexion con la BD
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/pruebaParque","root", "several975:burn:month:War");
+            //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
+            Connection conexion = DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
+
 
             // Preparamos la consulta
-            DatabaseMetaData dbmd = (DatabaseMetaData) conexion.getMetaData();//Creamos objeto DatabaseMetaData
+            DatabaseMetaData dbmd = conexion.getMetaData();//Creamos objeto DatabaseMetaData
 
             System.out.println();
 
@@ -696,5 +667,5 @@ public class Carga {
 
         return info;
     }
-     */
+
 }

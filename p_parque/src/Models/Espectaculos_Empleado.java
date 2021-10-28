@@ -1,5 +1,7 @@
 package Models;
 
+import java.util.ArrayList;
+
 public class Espectaculos_Empleado {
 
     // Atributos
@@ -53,8 +55,6 @@ public class Espectaculos_Empleado {
 
 
     // To String()
-
-
     @Override
     public String toString() {
         return "Espectaculos_Empleado{" +
@@ -62,5 +62,16 @@ public class Espectaculos_Empleado {
                 ", empleado='" + empleado + '\'' +
                 ", espectaculo=" + espectaculo +
                 '}';
+    }
+
+    public void mostrarEspectaculosEmpleados(ArrayList<Espectaculos_Empleado> espectaculosEmpleados) {
+
+        System.out.println("\nDatos del arrayList 'EspectaculosEmpleados':\n");
+        System.out.format("%-5s%-20s%-20s\n", "ID","ID_EMPLEADO", "ID_ESPECTACULO");
+
+        for (Espectaculos_Empleado ep : espectaculosEmpleados) {
+            System.out.format("%-5d%-20s%-5d\n", ep.getIdEspecEmp(), ep.getEmpleado(), ep.getEspectaculo());
+        }
+
     }
 }

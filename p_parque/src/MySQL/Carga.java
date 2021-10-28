@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 public class Carga {
 
+    //Cargar desde la base de datos las listas de espectaculos, empleados, clientes, clienteEspectaculos, empleadoEspectaculos
     public ArrayList<Espectaculo> listaEspectaculos() {
 
         ArrayList<Espectaculo> espectaculos = new ArrayList<>();
@@ -116,7 +117,6 @@ public class Carga {
         return empleados;
     }
 
-
     public ArrayList<Cliente> listaClientes() {
 
         ArrayList<Cliente> clientes = new ArrayList<>();
@@ -127,7 +127,7 @@ public class Carga {
             Class.forName("com.mysql.jdbc.Driver");
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL", "root", "several975:burn:month:War");
 
             Statement sentencia = (Statement) conexion.createStatement();
 
@@ -165,7 +165,6 @@ public class Carga {
         return clientes;
     }
 
-
     public ArrayList<Espectaculos_Cliente> listaClientesEspectaculo() {
 
         ArrayList<Espectaculos_Cliente> espectaculosClientes = new ArrayList<>();
@@ -176,7 +175,7 @@ public class Carga {
             Class.forName("com.mysql.jdbc.Driver");
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL", "root", "several975:burn:month:War");
 
 
             Statement sentencia = (Statement) conexion.createStatement();
@@ -214,7 +213,6 @@ public class Carga {
         return espectaculosClientes;
     }
 
-
     public ArrayList<Espectaculos_Empleado> listaEmpleadosEspectaculo() {
 
         ArrayList<Espectaculos_Empleado> espectaculosEmpleados = new ArrayList<>();
@@ -225,7 +223,7 @@ public class Carga {
             Class.forName("com.mysql.jdbc.Driver");
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL", "root", "several975:burn:month:War");
 
 
             Statement sentencia = (Statement) conexion.createStatement();
@@ -263,7 +261,51 @@ public class Carga {
         return espectaculosEmpleados;
     }
 
+    /*public ArrayList<Usuario> listaUsuarios(){
+        ArrayList<Usuario> usuarios = new ArrayList<>();
+        String sql = "SELECT * FROM usuarios";
 
+        try {
+            //Cargar el driver
+            Class.forName("com.mysql.jdbc.Driver");
+
+            //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL", "root", "several975:burn:month:War");
+
+
+            Statement sentencia = (Statement) conexion.createStatement();
+            // hace la consulta
+            ResultSet resul = sentencia.executeQuery(sql);
+
+            while (resul.next()) {
+                // Creo un objeto 'espectaculo' vacío
+                Usuario usuario = new Usuario();
+
+                // voy pasáandole los atributos al objeto 'espectaculo'
+                usuario.setIdPass(resul.getInt(1));
+                usuario.setUsuario(resul.getString(2));
+                usuario.setPassword(resul.getString(3));
+
+
+                // Añado el objeto 'espectaculo' al ArrayList espectaculos
+                usuarios.add(usuario);
+            }
+
+            // Cerrar ResultSet
+            resul.close();
+            // Cerrar Statement
+            sentencia.close();
+            //conexion.close();
+
+        } catch (SQLException | ClassNotFoundException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return usuarios;
+    }*/
+
+
+    //Funciones para añadir, modificar y eliminar Clientes
     public void clienteNuevo(Cliente cliente) {
 
         PreparedStatement ps;
@@ -273,7 +315,7 @@ public class Carga {
             Class.forName("com.mysql.jdbc.Driver");
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL", "root", "several975:burn:month:War");
 
 
             Statement sentencia = (Statement) conexion.createStatement();
@@ -307,7 +349,7 @@ public class Carga {
             Class.forName("com.mysql.jdbc.Driver");
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL", "root", "several975:burn:month:War");
 
 
             Statement sentencia = (Statement) conexion.createStatement();
@@ -342,7 +384,7 @@ public class Carga {
 
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL", "root", "several975:burn:month:War");
 
 
             Statement sentencia = (Statement) conexion.createStatement();
@@ -365,7 +407,7 @@ public class Carga {
         }
     }
 
-
+    //Funciones para añadir, modificar y eliminar Espectaculos
     public void espectaculoNuevo(Espectaculo espectaculo) {
 
         PreparedStatement ps;
@@ -375,7 +417,7 @@ public class Carga {
             Class.forName("com.mysql.jdbc.Driver");
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL", "root", "several975:burn:month:War");
 
 
             Statement sentencia = (Statement) conexion.createStatement();
@@ -414,7 +456,7 @@ public class Carga {
             Class.forName("com.mysql.jdbc.Driver");
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL", "root", "several975:burn:month:War");
 
             Statement sentencia = (Statement) conexion.createStatement();
 
@@ -443,12 +485,11 @@ public class Carga {
         }
 
 
-
         // La función me devuelve el ArrayList de espectaculos
         return espectaculo.getNo_Espect();
     }
 
-    public void modificarEspectaculo(Espectaculo espectaculo){
+    public void modificarEspectaculo(Espectaculo espectaculo) {
 
         PreparedStatement ps;
         String sql;
@@ -457,7 +498,7 @@ public class Carga {
             Class.forName("com.mysql.jdbc.Driver");
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL", "root", "several975:burn:month:War");
 
 
             Statement sentencia = (Statement) conexion.createStatement();
@@ -498,7 +539,7 @@ public class Carga {
 
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL", "root", "several975:burn:month:War");
 
 
             Statement sentencia = (Statement) conexion.createStatement();
@@ -522,42 +563,8 @@ public class Carga {
 
     }
 
-    public void anadirEmpleadoEspectaculo( String dniEmple,int idEspectaculo) {
-
-        java.sql.PreparedStatement ps;
-        String sql;
-
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-
-            //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
-
-
-            Statement sentencia = (Statement) conexion.createStatement();
-            sql = "insert into Espectaculos_Empleados(Empleado, Espectaculo) values (?,?)";
-
-            ps = (java.sql.PreparedStatement) conexion.prepareStatement(sql);
-
-            ps.setString(1, dniEmple);
-
-            ps.setInt(2, idEspectaculo);
-
-            ps.executeUpdate();
-
-            JOptionPane.showMessageDialog(null, "Se han insertado los datos");
-
-            sentencia.close();
-            conexion.close();
-
-        } catch (SQLException | ClassNotFoundException e) {
-            JOptionPane.showMessageDialog(null, "Error" + e.getMessage());
-        }
-
-    }
-
-
-    public void empleadoNuevo(Empleado empleado){
+    //Funciones para añadir, modificar y eliminar Empleados
+    public void empleadoNuevo(Empleado empleado) {
 
         PreparedStatement ps;
         String sql;
@@ -566,7 +573,7 @@ public class Carga {
             Class.forName("com.mysql.jdbc.Driver");
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL", "root", "several975:burn:month:War");
 
 
             Statement sentencia = (Statement) conexion.createStatement();
@@ -595,7 +602,7 @@ public class Carga {
 
     }
 
-    public void modificarEmpleado(Empleado empleado){
+    public void modificarEmpleado(Empleado empleado) {
 
         PreparedStatement ps;
         String sql;
@@ -604,7 +611,7 @@ public class Carga {
             Class.forName("com.mysql.jdbc.Driver");
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL", "root", "several975:burn:month:War");
 
 
             Statement sentencia = (Statement) conexion.createStatement();
@@ -633,7 +640,7 @@ public class Carga {
         }
     }
 
-    public void eliminarEmpleado(Empleado empleado){
+    public void eliminarEmpleado(Empleado empleado) {
 
         PreparedStatement ps;
         String sql;
@@ -643,7 +650,7 @@ public class Carga {
 
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL", "root", "several975:burn:month:War");
 
 
             Statement sentencia = (Statement) conexion.createStatement();
@@ -669,6 +676,137 @@ public class Carga {
     }
 
 
+    //Funciones para añadir y eliminar clienteEspectaculos
+    public void anadirClienteEspectaculo(String dniCliente, int idEspectaculo) {
+        PreparedStatement ps;
+        String sql;
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+
+
+            //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL", "root", "several975:burn:month:War");
+
+
+            Statement sentencia = (Statement) conexion.createStatement();
+
+            sql = "insert into Espectaculos_Clientes(Cliente, Espectaculo) values (?,?)";
+
+            ps = (PreparedStatement) conexion.prepareStatement(sql);
+
+            ps.setString(1, dniCliente);
+            ps.setInt(2, idEspectaculo);
+
+            ps.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Se han insertado los datos");
+
+            sentencia.close();
+            conexion.close();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Error" + e.getMessage());
+        }
+    }
+
+    public void eliminarEspectaculoCliente(Espectaculos_Cliente espCli) {
+        PreparedStatement ps;
+        String sql;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+
+
+            //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL", "root", "several975:burn:month:War");
+
+
+            Statement sentencia = (Statement) conexion.createStatement();
+            sql = "delete from Espectaculos_Clientes where Cliente=? and Espectaculo=?";
+
+            ps = (PreparedStatement) conexion.prepareStatement(sql);
+            ps.setString(1, espCli.getCliente());
+            ps.setInt(2, espCli.getEspectaculo());
+
+
+            ps.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Se ha borrado el espectaculo ");
+
+            sentencia.close();
+            conexion.close();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Error" + e.getMessage());
+        }
+    }
+
+    //Funciones para añadir y eliminar empleadoEspectaculos
+    public void anadirEmpleadoEspectaculo(String dniEmple, int idEspectaculo) {
+
+        java.sql.PreparedStatement ps;
+        String sql;
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+
+            //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL", "root", "several975:burn:month:War");
+
+
+            Statement sentencia = (Statement) conexion.createStatement();
+            sql = "insert into Espectaculos_Empleados(Empleado, Espectaculo) values (?,?)";
+
+            ps = conexion.prepareStatement(sql);
+
+            ps.setString(1, dniEmple);
+
+            ps.setInt(2, idEspectaculo);
+
+            ps.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Se han insertado los datos");
+
+            sentencia.close();
+            conexion.close();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Error" + e.getMessage());
+        }
+
+    }
+
+    public void eliminarEspectaculoEmpleado(Espectaculos_Empleado espEmp) {
+        PreparedStatement ps;
+        String sql;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+
+
+            //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL", "root", "several975:burn:month:War");
+
+
+            Statement sentencia = (Statement) conexion.createStatement();
+            sql = "delete from Espectaculos_Empleados where Empleado=? and Espectaculo=?";
+
+            ps = (PreparedStatement) conexion.prepareStatement(sql);
+            ps.setString(1, espEmp.getEmpleado());
+            ps.setInt(2, espEmp.getEspectaculo());
+
+
+            ps.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Se ha borrado el espectaculo ");
+
+            sentencia.close();
+            conexion.close();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Error" + e.getMessage());
+        }
+    }
+
+    //Funcion para cargar la información de la base de datos de MySQL
     public String infoMySql(JTextArea infoJtextArea) {
 
         String info = "";
@@ -682,7 +820,7 @@ public class Carga {
             //Class.forName("oracle.jdbc.driver.OracleDriver");
 
             // Establecemos la conexion con la BD
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL","root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL", "root", "several975:burn:month:War");
 
             // Preparamos la consulta
             DatabaseMetaData dbmd = (DatabaseMetaData) conexion.getMetaData();//Creamos objeto DatabaseMetaData
@@ -735,4 +873,76 @@ public class Carga {
         return info;
     }
 
+    /*public String mirarPassword(String usuario){
+        String sql = "select contrasena from usuarios where usuario=?";
+        String password = "";
+        Usuario user = new Usuario(usuario,password);
+
+        try {
+            //Cargar el driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/Juanan", "root", "damnoc1819");
+
+            Statement sentencia = (Statement) conexion.createStatement();
+
+            // hace la consulta
+            ResultSet resul = sentencia.executeQuery("select contrasena from usuarios where usuario='"+usuario+"'");
+
+            while (resul.next()) {
+
+                // Creo un objeto 'Usuario' con el usuario que me pasan por parámetro de entrada
+                // voy pasándole los atributos al objeto 'espectaculo'
+                user.setPassword(resul.getString(1));
+
+            }
+            //System.out.println("User: "+user);
+
+            // Cerrar ResultSet
+            resul.close();
+            // Cerrar Statement
+            sentencia.close();
+            // Cerrar conexion
+            conexion.close();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            // hacer algo con la excepcion
+        }
+
+
+        // La función me devuelve el ArrayList de espectaculos
+        return user.getPassword();
+    }*/
+    /*public void crearUsuarioNuevo(Usuario usuario){
+        PreparedStatement ps;
+        String sql;
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/Juanan", "root", "damnoc1819");
+
+
+            Statement sentencia = (Statement) conexion.createStatement();
+
+            sql = "insert into usuarios (usuario,contrasena) values (?,?)";
+
+            ps = (PreparedStatement) conexion.prepareStatement(sql);
+            ps.setString(1, usuario.getUsuario());
+            ps.setString(2, usuario.getPassword());
+
+
+            ps.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Se han insertado los datos");
+
+            sentencia.close();
+            conexion.close();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Error" + e.getMessage());
+        }
+    }*/
 }
