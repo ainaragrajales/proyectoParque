@@ -2,6 +2,7 @@ package Models;
 
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class EmpleadoSQLite {
 
@@ -25,6 +26,10 @@ public class EmpleadoSQLite {
         this.Nacionalidad = nacionalidad;
         this.cargo = cargo;
 
+    }
+
+    public EmpleadoSQLite(String dniEmple) {
+        this.dniEmple = dniEmple;
     }
 
     public EmpleadoSQLite() {
@@ -96,6 +101,26 @@ public class EmpleadoSQLite {
 
     @Override
     public String toString() {
-        return nombreEmple;
+        return nombreEmple + " " + ApeEmple;
+    }
+
+    public void mostrarEmpleadosSQLite(ArrayList<EmpleadoSQLite> empleadosSQLite){
+        System.out.println("\n Datos del arrayList EmpleadosSQLite: \n");
+        System.out.format("%-15s%-20s%-15s%-15s%-15s%-20s%-20s\n", "ID", "NOMBRE", "APELLIDOS", "NACOMIENTO", "CONTRATO", "NACIONALIDAD", "CARGO");
+        for (EmpleadoSQLite em: empleadosSQLite){
+            System.out.format("%-15s%-20s%-15s%-15s%-15s%-20s%-20s\n", em.getDniEmple(), em.getNombreEmple(), em.getApeEmple(), em.getFechaNac(), em.getFechaContr(), em.getNacionalidad(), em.getCargo());
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof EmpleadoSQLite empleado)) return false;
+        return getDniEmple().equals(empleado.getDniEmple());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getDniEmple());
     }
 }

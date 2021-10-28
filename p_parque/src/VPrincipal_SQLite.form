@@ -867,7 +867,7 @@
                               <text value="-"/>
                             </properties>
                           </component>
-                          <component id="12007" class="javax.swing.JComboBox" binding="comboBoxEspectaculos">
+                          <component id="12007" class="javax.swing.JComboBox" binding="comboBoxEspectaculosSQLite">
                             <constraints>
                               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                             </constraints>
@@ -948,7 +948,7 @@
                         <properties/>
                         <border type="none"/>
                         <children>
-                          <component id="4444c" class="javax.swing.JButton">
+                          <component id="4444c" class="javax.swing.JButton" binding="bt_AnadirEspecEmpleado">
                             <constraints>
                               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                             </constraints>
@@ -956,7 +956,7 @@
                               <text value="+"/>
                             </properties>
                           </component>
-                          <component id="e5121" class="javax.swing.JButton">
+                          <component id="e5121" class="javax.swing.JButton" binding="bt_BorrarEspecEmpleado">
                             <constraints>
                               <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                             </constraints>
@@ -964,13 +964,13 @@
                               <text value="-"/>
                             </properties>
                           </component>
-                          <component id="f7975" class="javax.swing.JComboBox">
+                          <component id="f7975" class="javax.swing.JComboBox" binding="comboBoxEspectaculosSQLite2">
                             <constraints>
                               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                             </constraints>
                             <properties/>
                           </component>
-                          <component id="4162a" class="javax.swing.JButton">
+                          <component id="4162a" class="javax.swing.JButton" binding="bt_GuardarEspecEmpleado">
                             <constraints>
                               <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                             </constraints>

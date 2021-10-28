@@ -12,6 +12,7 @@ import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class VPrincipal_MySQL {
     public JPanel VPanelPrincipal;
@@ -112,8 +113,7 @@ public class VPrincipal_MySQL {
     private Espectaculos_Cliente espectaculosCliente;
 
     public VPrincipal_MySQL() {
-
-
+        //Funcion para hacer todas las cargas y refrescar datos
         CargaryRefrescarTodo();
 
         //Poner los botones de guardar en oculto
@@ -132,7 +132,6 @@ public class VPrincipal_MySQL {
 
         //Botones de la pestaña Clientes
         bt_nuevoCli.addActionListener(e -> {
-
             campo_dni.setEnabled(true);
             limpiarCampos();
             bt_guardarCli.setVisible(true);
@@ -141,30 +140,61 @@ public class VPrincipal_MySQL {
             if (!comprobarCamposVacios()) {
                 panelMensajePersonalizado("Campos Vacíos", "No puede haber campos vacíos. Comprueba todos los campos", 0);
             } else if (!campo_dni.isEnabled()) {
+                String errores = "";
                 String edadString = String.valueOf(campo_edad.getText());
-                int edadInt = Integer.parseInt(edadString);
-                cliente = new Cliente(campo_dni.getText(), campo_nombre.getText(), campo_apellido.getText(), edadInt);
-                clientes.add(cliente);
-                for (Cliente cliente1 : clientes) {
-                    System.out.println(cliente1);
+                if (!validarDNI(campo_dni.getText())) {
+                    errores += "DNI: No es un dni válido\n";
+                    campo_dni.setText("");
                 }
-                new Carga().modificarCliente(cliente);
-                cargaDatos();
-                cargar_j_list_clientes();
-            } else {
-                String edadString = String.valueOf(campo_edad.getText());
-                int edadInt = Integer.parseInt(edadString);
-                cliente = new Cliente(campo_dni.getText(), campo_nombre.getText(), campo_apellido.getText(), edadInt);
-                clientes.add(cliente);
-                for (Cliente cliente1 : clientes) {
-                    System.out.println(cliente1);
+                if (!numeroCorrecto(edadString)) {
+                    errores += "EDAD: Introduce un número correcto\n";
+                    campo_edad.setText("");
                 }
-                new Carga().clienteNuevo(cliente);
-                cargaDatos();
-                cargar_j_list_clientes();
+                if (!errores.equalsIgnoreCase("")) {
+                    JOptionPane.showMessageDialog(null, errores);
 
+                }
+                int edadInt = Integer.parseInt(edadString);
+                cliente = new Cliente(campo_dni.getText(), campo_nombre.getText(), campo_apellido.getText(), edadInt);
+                clientes.add(cliente);
+                cliente.mostrarClientes(clientes);
+                new Carga().modificarCliente(cliente);
+
+                CargaryRefrescarTodo();
+            } else {
+                String nombreRepe = comprobarDNIcliente(clientes, campo_dni.getText());
+
+                if (clientes.contains(new Cliente(campo_dni.getText()))) {
+                    JOptionPane.showMessageDialog(null, "Ya existe el cliente '" + nombreRepe.toUpperCase() + "' con el dni '" + campo_dni.getText() + "'\nIntroduce otro DNI...");
+
+                } else {
+                    String errores = "";
+                    String edadString = String.valueOf(campo_edad.getText());
+
+                    if (!validarDNI(campo_dni.getText())) {
+                        errores += "DNI: No es un dni válido\n";
+                        campo_dni.setText("");
+
+                    }
+                    if (!numeroCorrecto(edadString)) {
+                        errores += "EDAD: Introduce un número correcto\n";
+                        campo_edad.setText("");
+                    }
+                    if (!errores.equalsIgnoreCase("")) {
+                        JOptionPane.showMessageDialog(null, errores);
+
+                    } else {
+                        int edadInt = Integer.parseInt(edadString);
+                        cliente = new Cliente(campo_dni.getText(), campo_nombre.getText(), campo_apellido.getText(), edadInt);
+                        clientes.add(cliente);
+                        cliente.mostrarClientes(clientes);
+                        new Carga().clienteNuevo(cliente);
+                    }
+
+
+                }
             }
-            //new Carga().listaClientesEspectaculo();
+            CargaryRefrescarTodo();
             limpiarCampos();
             bt_guardarCli.setVisible(false);
         });
@@ -176,22 +206,21 @@ public class VPrincipal_MySQL {
 
         });
         bt_eliminarCli.addActionListener(e -> {
-            //JOptionPane.showConfirmDialog(null, "Seguro que lo quieres eliminar?", "Eliminar", JOptionPane.YES_NO_OPTION);
+            int opcion = JOptionPane.showConfirmDialog(null, "Seguro que lo quieres eliminar?", "Eliminar", JOptionPane.YES_NO_OPTION);
 
             String edadString = String.valueOf(campo_edad.getText());
-            int edadInt = Integer.parseInt(edadString);
-            cliente = new Cliente(campo_dni.getText(), campo_nombre.getText(), campo_apellido.getText(), edadInt);
-            clientes.remove(cliente);
-            for (Cliente cliente1 : clientes) {
-                System.out.println(cliente1);
+
+            if (opcion == JOptionPane.YES_OPTION) {
+                int edadInt = Integer.parseInt(edadString);
+                cliente = new Cliente(campo_dni.getText(), campo_nombre.getText(), campo_apellido.getText(), edadInt);
+                clientes.remove(cliente);
+                cliente.mostrarClientes(clientes);
+                new Carga().eliminarCliente(cliente);
             }
-            new Carga().eliminarCliente(cliente);
-            cargaDatos();
-            cargar_j_list_clientes();
-
-
+            CargaryRefrescarTodo();
             limpiarCampos();
             bt_guardarCli.setVisible(false);
+
         });
 
 
@@ -199,7 +228,7 @@ public class VPrincipal_MySQL {
         bt_AnadirEsp.addActionListener(e -> {
 
             et_ID_Espec.setEnabled(true);
-            //et_ID_Espec.setVisible(false);
+            et_ID_Espec.setVisible(false);
             limpiarCampos();
             bt_GuardarEspectaculo.setVisible(true);
 
@@ -210,84 +239,125 @@ public class VPrincipal_MySQL {
                 panelMensajePersonalizado("Campos Vacíos", "No puede haber campos vacíos. Comprueba todos los campos", 0);
 
             } else if (!et_ID_Espec.isEnabled()) {
-
+                String errores = "";
                 String aforoString = String.valueOf(et_aforo.getText());
-                int aforoInt = Integer.parseInt(aforoString);
                 String fechaString = String.valueOf(et_fecha.getText());
-                Date fechaDate = Date.valueOf(fechaString);
                 String horarioString = String.valueOf(et_horario.getText());
-                Time horarioTime = Time.valueOf(horarioString);
                 String precioString = String.valueOf(et_precio.getText());
-                double precioDouble = Double.parseDouble(precioString);
-                String responsable = String.valueOf(comboBoxEmpleados.getSelectedItem());
-                //String idString = String.valueOf(et_ID_Espec.getText());
-                //int idInt = Integer.parseInt(idString);
-                espectaculo = new Espectaculo(et_Espectaculo.getText(), aforoInt, et_Descripcion.getText(), et_lugar.getText(), fechaDate, horarioTime, precioDouble, responsable);
 
-                espectaculos.add(espectaculo);
-                for (Espectaculo espectaculo1 : espectaculos) {
-                    System.out.println(espectaculo1);
+                if (!numeroCorrecto(aforoString)) {
+                    errores += "AFORO: Introduce un número correcto\n";
+                    et_aforo.setText("");
+                }
+                if (!formatoFecha(fechaString)) {
+                    errores += "FECHA: Introduce una fecha correcta --> 'yyyy-mm-dd'\n";
+                    et_fecha.setText("");
+                }
+                if (!formatoMinutosSegundos(horarioString)) {
+                    errores += "HORARIO: Introduce un formato correcto --> 'HH:mm:ss' \n";
+                    et_horario.setText("");
+                }
+                if (!numeroCorrecto(precioString)) {
+                    errores += "PRECIO: Introduce un número correcto\n";
+                    et_precio.setText("");
                 }
 
-                new Carga().modificarEspectaculo(espectaculo);
-                cargaDatos();
-                cargar_j_list_espectaculos();
+                if (!errores.equalsIgnoreCase("")) {
+                    JOptionPane.showMessageDialog(null, errores);
 
+                } else {
+
+                    int aforoInt = Integer.parseInt(aforoString);
+                    Date fechaDate = Date.valueOf(fechaString);
+                    Time horarioTime = Time.valueOf(horarioString);
+                    double precioDouble = Double.parseDouble(precioString);
+                    String responsable = String.valueOf(comboBoxEmpleados.getSelectedItem());
+
+                    espectaculo = new Espectaculo(et_Espectaculo.getText(), aforoInt, et_Descripcion.getText(), et_lugar.getText(), fechaDate, horarioTime, precioDouble, responsable);
+                    espectaculos.add(espectaculo);
+                    espectaculo.mostrarEspectaculos(espectaculos);
+
+                    new Carga().modificarEspectaculo(espectaculo);
+                    CargaryRefrescarTodo();
+                }
             } else {
-                //SimpleDateFormat formato = new SimpleDateFormat("yyyy/MM/dd");
+                String errores = "";
                 String aforoString = String.valueOf(et_aforo.getText());
-                int aforoInt = Integer.parseInt(aforoString);
                 String fechaString = String.valueOf(et_fecha.getText());
-                Date fechaDate = Date.valueOf(fechaString);
                 String horarioString = String.valueOf(et_horario.getText());
-                Time horarioTime = Time.valueOf(horarioString);
                 String precioString = String.valueOf(et_precio.getText());
-                double precioDouble = Double.parseDouble(precioString);
-                //String idString = String.valueOf(et_ID_Espec.getText());
-                //int idInt = Integer.parseInt(idString);
-                String responsable = String.valueOf(comboBoxEmpleados.getSelectedItem());
-                espectaculo = new Espectaculo(et_Espectaculo.getText(), aforoInt, et_Descripcion.getText(), et_lugar.getText(), fechaDate, horarioTime, precioDouble, responsable);
 
-                espectaculos.add(espectaculo);
-                for (Espectaculo espectaculo1 : espectaculos) {
-                    System.out.println(espectaculo1);
+                if (!numeroCorrecto(aforoString)) {
+                    errores += "AFORO: Introduce un número correcto\n";
+                    et_aforo.setText("");
+                }
+                if (!formatoFecha(fechaString)) {
+                    errores += "FECHA: Introduce una fecha correcta --> 'yyyy-mm-dd'\n";
+                    et_fecha.setText("");
+
+                }
+                if (!formatoMinutosSegundos(horarioString)) {
+                    errores += "HORARIO: Introduce un formato correcto --> 'HH:mm:ss' \n";
+                    et_horario.setText("");
+
+                }
+                if (!numeroCorrecto(precioString)) {
+                    errores += "PRECIO: Introduce un número correcto\n";
+                    et_precio.setText("");
                 }
 
-                new Carga().espectaculoNuevo(espectaculo);
+                if (!errores.equalsIgnoreCase("")) {
+                    JOptionPane.showMessageDialog(null, errores);
 
-                // Hayo el id máximo del ultima inserción de espectaculos y se lo paso a la tabla de espectaculos_Empleados para hacer el insert
-                int idmax = new Carga().idMaxEspectaculos();
-                // Comprobacion por pantalla del iD máximo:
-                System.out.println("\nID máximo de la tabla espectáculo es: " + idmax);
+                } else {
+                    int aforoInt = Integer.parseInt(aforoString);
+                    Date fechaDate = Date.valueOf(fechaString);
+                    Time horarioTime = Time.valueOf(horarioString);
+                    double precioDouble = Double.parseDouble(precioString);
 
-                // Hago un cast del objeto seleccionado del combobox a objeto Empleado, para poder aaceder luego a su dni  y pasarselo al constructor y a la función para añadir a la table espectaculos_empleados
-                Empleado ep = (Empleado) comboBoxEmpleados.getSelectedItem();
-                System.out.println("Empleado: " + ep.getNombreEmple() + ", " + ep.getDniEmple());
+                    if (espectaculos.contains(new Espectaculo(et_Espectaculo.getText(), et_lugar.getText(), fechaDate, horarioTime))) {
+                        JOptionPane.showMessageDialog(null, "Ya está actualmente el espectáculo '" + et_Espectaculo.getText().toUpperCase() + "' en cartelera (" + et_lugar.getText() + ", " + fechaDate + ", " + horarioString + ")\nIntroduce otro espectáculo...");
 
+                    } else {
+                        String responsable = String.valueOf(comboBoxEmpleados.getSelectedItem());
+                        espectaculo = new Espectaculo(et_Espectaculo.getText(), aforoInt, et_Descripcion.getText(), et_lugar.getText(), fechaDate, horarioTime, precioDouble, responsable);
 
+                        espectaculos.add(espectaculo);
+                        espectaculo.mostrarEspectaculos(espectaculos);
 
-                // Añado el empleado responsable a la tabla de espectaculos_empleados, con el dni del empleado escogido del comboBox String) y el espectaculo recien añadido (int)
-                espectaculoEmpleado = new Espectaculos_Empleado(ep.getDniEmple(), idmax);
-                espectaculosEmpleados.add(espectaculoEmpleado);
+                        new Carga().espectaculoNuevo(espectaculo);
 
-                // Añado al empleado relacionado con su espectáculo  a la tabla de espectáculos_empleados
-                new Carga().anadirEmpleadoEspectaculo(ep.getDniEmple(), idmax);
+                        // Hayo el id máximo del ultima inserción de espectaculos y se lo paso a la tabla de espectaculos_Empleados para hacer el insert
+                        int idmax = new Carga().idMaxEspectaculos();
+                        // Comprobacion por pantalla del iD máximo:
+                        System.out.println("\nID máximo de la tabla espectáculo es: " + idmax);
 
+                        String idEmple = "";
+                        String empleado = (String) comboBoxEmpleados.getSelectedItem();
+                        for (Empleado empleado1 : empleados) {
+                            if (empleado1.getNombreEmple().equalsIgnoreCase(empleado)) {
+                                idEmple = empleado1.getDniEmple();
+                            }
+                        }
 
-                // Saco por pantalla una lista con todos los empleados con sus espectáculos que hay en la base de datos de la tabal espectaculos_empleados
-                //espectaculoEmpleado.mostrarEspectaculosEmpleados(espectaculosEmpleados);
-                for (Espectaculos_Empleado ep1 : espectaculosEmpleados) {
-                    System.out.println(ep1);
+                        // Añado el empleado responsable a la tabla de espectaculos_empleados, con el dni del empleado escogido del comboBox String) y el espectaculo recien añadido (int)
+                        espectaculoEmpleado = new Espectaculos_Empleado(idEmple, idmax);
+                        espectaculosEmpleados.add(espectaculoEmpleado);
+
+                        // Añado al empleado relacionado con su espectáculo  a la tabla de espectáculos_empleados
+                        new Carga().anadirEmpleadoEspectaculo(idEmple, idmax);
+                        // Saco por pantalla una lista con todos los empleados con sus espectáculos que hay en la base de datos de la tabal espectaculos_empleados
+                        espectaculoEmpleado.mostrarEspectaculosEmpleados(espectaculosEmpleados);
+
+                        CargaryRefrescarTodo();
+                    }
                 }
 
-
-                cargaDatos();
-                cargar_j_list_espectaculos();
-                //et_ID_Espec.setVisible(true);
 
             }
             limpiarCampos();
             bt_GuardarEspectaculo.setVisible(false);
+            //et_ID_Espec.setVisible(true);
         });
         bt_ModEsp.addActionListener(e -> {
 
@@ -297,27 +367,27 @@ public class VPrincipal_MySQL {
         });
         bt_eliminar.addActionListener(e -> {
 
-            String aforoString = String.valueOf(et_aforo.getText());
-            int aforoInt = Integer.parseInt(aforoString);
-            String fechaString = String.valueOf(et_fecha.getText());
-            Date fechaDate = Date.valueOf(fechaString);
-            String horarioString = String.valueOf(et_horario.getText());
-            Time horarioTime = Time.valueOf(horarioString);
-            String precioString = String.valueOf(et_precio.getText());
-            double precioDouble = Double.parseDouble(precioString);
-            String idString = String.valueOf(et_ID_Espec.getText());
-            int idInt = Integer.parseInt(idString);
-            String responsable = String.valueOf(comboBoxEmpleados.getSelectedItem());
-            espectaculo = new Espectaculo(idInt, et_Espectaculo.getText(), aforoInt, et_Descripcion.getText(), et_lugar.getText(), fechaDate, horarioTime, precioDouble, responsable);
+            int opcion = JOptionPane.showConfirmDialog(null, "Seguro que lo quieres eliminar?", "Eliminar", JOptionPane.YES_NO_OPTION);
 
-            espectaculos.remove(espectaculo);
-            for (Espectaculo espectaculo1 : espectaculos) {
-                System.out.println(espectaculo1);
+            if (opcion == JOptionPane.YES_OPTION) {
+                String aforoString = String.valueOf(et_aforo.getText());
+                int aforoInt = Integer.parseInt(aforoString);
+                String fechaString = String.valueOf(et_fecha.getText());
+                Date fechaDate = Date.valueOf(fechaString);
+                String horarioString = String.valueOf(et_horario.getText());
+                Time horarioTime = Time.valueOf(horarioString);
+                String precioString = String.valueOf(et_precio.getText());
+                double precioDouble = Double.parseDouble(precioString);
+                String idString = String.valueOf(et_ID_Espec.getText());
+                int idInt = Integer.parseInt(idString);
+                String responsable = String.valueOf(comboBoxEmpleados.getSelectedItem());
+                espectaculo = new Espectaculo(idInt, et_Espectaculo.getText(), aforoInt, et_Descripcion.getText(), et_lugar.getText(), fechaDate, horarioTime, precioDouble, responsable);
+
+                espectaculos.remove(espectaculo);
+                espectaculo.mostrarEspectaculos(espectaculos);
+                new Carga().eliminarEspectaculo(espectaculo);
             }
-            new Carga().eliminarEspectaculo(espectaculo);
-            cargaDatos();
-            cargar_j_list_espectaculos();
-
+            CargaryRefrescarTodo();
             limpiarCampos();
             bt_GuardarEspectaculo.setVisible(false);
 
@@ -335,60 +405,126 @@ public class VPrincipal_MySQL {
             bt_GuardarEmple.setVisible(true);
         });
         bt_eliminarEmple.addActionListener(e -> {
-            String fechaNacString = String.valueOf(et_NacEmp.getText());
-            Date fechaNacDate = Date.valueOf(fechaNacString);
-            String fechaContString = String.valueOf(et_fechaContrEmp.getText());
-            Date fechaContDate = Date.valueOf(fechaContString);
 
-            empleado = new Empleado(et_dniEmp.getText(), et_emple.getText(), et_apeEmple.getText(), fechaNacDate, fechaContDate, et_NacioEmpl.getText(), et_CargoEmpl.getText());
-            empleados.remove(empleado);
-            for (Empleado empleado1 : empleados) {
-                System.out.println(empleado1);
+            boolean correcto = true;
+            Empleado empleado = listaEmpleados.getSelectedValue();
+            String espectaculosEmpleadoQueQuieroBorrar = "";
+            for (Espectaculo espectaculo1 : espectaculos) {
+                if (espectaculo1.getResponsable().equalsIgnoreCase(empleado.getNombreEmple())) {
+                    System.out.println("Empleado responsable espectáculo: " + espectaculo1.getResponsable());
+                    System.out.println("Empleado seleccionado de la lista: " + empleado.getNombreEmple());
+                    correcto = false;
+                    espectaculosEmpleadoQueQuieroBorrar += espectaculo1.getNombreEspec() + "\n";
+
+                }
             }
+            if (correcto) {
 
-            new Carga().eliminarEmpleado(empleado);
-            cargaDatos();
-            cargar_j_list_empleados();
+
+                int opcion = JOptionPane.showConfirmDialog(null, "Seguro que lo quieres eliminar?", "Eliminar", JOptionPane.YES_NO_OPTION);
+
+                if (opcion == JOptionPane.YES_OPTION) {
+                    String fechaNacString = String.valueOf(et_NacEmp.getText());
+                    Date fechaNacDate = Date.valueOf(fechaNacString);
+                    String fechaContString = String.valueOf(et_fechaContrEmp.getText());
+                    Date fechaContDate = Date.valueOf(fechaContString);
+
+                    empleado = new Empleado(et_dniEmp.getText(), et_emple.getText(), et_apeEmple.getText(), fechaNacDate, fechaContDate, et_NacioEmpl.getText(), et_CargoEmpl.getText());
+                    empleados.remove(empleado);
+                    empleado.mostrarEmpleados(empleados);
+
+                    new Carga().eliminarEmpleado(empleado);
+                }
+            } else {
+
+                JOptionPane.showMessageDialog(null, "Si quieres borrar a " + et_emple.getText().toUpperCase() + " tienes que cambiar de responsable en los siquientes espectáculos:\n" + espectaculosEmpleadoQueQuieroBorrar.toUpperCase());
+
+            }
+            CargaryRefrescarTodo();
 
             limpiarCampos();
             bt_GuardarEmple.setVisible(false);
+
         });
         bt_GuardarEmple.addActionListener(e -> {
             if (!comprobarCamposVaciosEmpleados()) {
                 panelMensajePersonalizado("Campos Vacíos", "No puede haber campos vacíos. Comprueba todos los campos", 0);
             } else if (!et_dniEmp.isEnabled()) {
-
+                String errores = "";
                 String fechaNacString = String.valueOf(et_NacEmp.getText());
-                Date fechaNacDate = Date.valueOf(fechaNacString);
                 String fechaContString = String.valueOf(et_fechaContrEmp.getText());
-                Date fechaContDate = Date.valueOf(fechaContString);
 
-                empleado = new Empleado(et_dniEmp.getText(), et_emple.getText(), et_apeEmple.getText(), fechaNacDate, fechaContDate, et_NacioEmpl.getText(), et_CargoEmpl.getText());
-                empleados.add(empleado);
-                for (Empleado empleado1 : empleados) {
-                    System.out.println(empleado1);
+                if (!validarDNI(et_dniEmp.getText())) {
+                    errores += "DNI: No es un dni válido\n";
+                    et_dniEmp.getText();
+
+                }
+                if (!formatoFecha(fechaNacString)) {
+                    errores += "FECHA: Introduce una fecha correcta --> 'yyyy-mm-dd'\n";
+                    et_NacEmp.setText("");
+
+                }
+                if (!formatoFecha(fechaContString)) {
+                    errores += "FECHA: Introduce una fecha correcta --> 'yyyy-mm-dd'\n";
+                    et_fechaContrEmp.setText("");
+
+                }
+                if (!errores.equalsIgnoreCase("")) {
+                    JOptionPane.showMessageDialog(null, errores);
+
+                } else {
+                    Date fechaNacDate = Date.valueOf(fechaNacString);
+                    Date fechaContDate = Date.valueOf(fechaContString);
+
+                    empleado = new Empleado(et_dniEmp.getText(), et_emple.getText(), et_apeEmple.getText(), fechaNacDate, fechaContDate, et_NacioEmpl.getText(), et_CargoEmpl.getText());
+                    empleados.add(empleado);
+                    empleado.mostrarEmpleados(empleados);
+                    new Carga().modificarEmpleado(empleado);
                 }
 
-                new Carga().modificarEmpleado(empleado);
-                cargaDatos();
-                cargar_j_list_empleados();
+                CargaryRefrescarTodo();
 
 
             } else {
+                String errores = "";
+                String nombreRepe = comprobarDNIempleado(empleados, et_dniEmp.getText());
                 String fechaNacString = String.valueOf(et_NacEmp.getText());
-                Date fechaNacDate = Date.valueOf(fechaNacString);
                 String fechaContString = String.valueOf(et_fechaContrEmp.getText());
-                Date fechaContDate = Date.valueOf(fechaContString);
 
-                empleado = new Empleado(et_dniEmp.getText(), et_emple.getText(), et_apeEmple.getText(), fechaNacDate, fechaContDate, et_NacioEmpl.getText(), et_CargoEmpl.getText());
-                empleados.add(empleado);
-                for (Empleado empleado1 : empleados) {
-                    System.out.println(empleado1);
+                if (!validarDNI(et_dniEmp.getText())) {
+                    errores += "DNI: No es un dni válido\n";
+                    et_dniEmp.getText();
+
+                }
+                if (!formatoFecha(fechaNacString)) {
+                    errores += "FECHA: Introduce una fecha correcta --> 'yyyy-mm-dd'\n";
+                    et_NacEmp.setText("");
+
+                }
+                if (!formatoFecha(fechaContString)) {
+                    errores += "FECHA: Introduce una fecha correcta --> 'yyyy-mm-dd'\n";
+                    et_fechaContrEmp.setText("");
+
+                }
+                if (!errores.equalsIgnoreCase("")) {
+                    JOptionPane.showMessageDialog(null, errores);
+
+                } else {
+                    if (empleados.contains(new Empleado(et_dniEmp.getText()))) {
+                        JOptionPane.showMessageDialog(null, "Ya existe el empleado '" + nombreRepe.toUpperCase() + "' con el dni '" + et_dniEmp.getText() + "'\nIntroduce otro DNI...");
+
+                    } else {
+                        Date fechaNacDate = Date.valueOf(fechaNacString);
+                        Date fechaContDate = Date.valueOf(fechaContString);
+
+                        empleado = new Empleado(et_dniEmp.getText(), et_emple.getText(), et_apeEmple.getText(), fechaNacDate, fechaContDate, et_NacioEmpl.getText(), et_CargoEmpl.getText());
+                        empleados.add(empleado);
+                        empleado.mostrarEmpleados(empleados);
+                        new Carga().empleadoNuevo(empleado);
+                    }
                 }
 
-                new Carga().empleadoNuevo(empleado);
-                cargaDatos();
-                cargar_j_list_empleados();
+                CargaryRefrescarTodo();
 
             }
             limpiarCampos();
@@ -589,9 +725,16 @@ public class VPrincipal_MySQL {
 
         });
 
+        bt_salir.addActionListener(e -> {
+            //VAccesoMySql.estasConectado=false;
+            JOptionPane.showMessageDialog(null, "Adios");
+            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(VPanelPrincipal);
+            topFrame.dispose();
+        });
     }
 
-    public void CargaryRefrescarTodo(){
+
+    public void CargaryRefrescarTodo() {
         cargaDatos();
         cargar_tablas_relaciones();
         cargar_j_list_clientes();
@@ -619,118 +762,38 @@ public class VPrincipal_MySQL {
     }
 
     private void cargar_tablas_relaciones() {
-        System.out.println("\n**************** CARGA DE DATOS DE LOS CLIENTES POR ESPECTACULO *****************\n");
-
         for (int i = 0; i < espectaculos.size(); i++) {
-            System.out.println("Posicion(i): " + i);
-            System.out.println("Espectaculo nº: " + espectaculos.get(i).getNo_Espect());
             for (int j = 0; j < espectaculosClientes.size(); j++) {
 
                 for (int k = 0; k < clientes.size(); k++) {
                     if (espectaculos.get(i).getNo_Espect() == espectaculosClientes.get(j).getEspectaculo() && clientes.get(k).getDni().equalsIgnoreCase(espectaculosClientes.get(j).getCliente())) {
                         Cliente c = new Cliente(clientes.get(k).getDni(), clientes.get(k).getNombre(), clientes.get(k).getApellidos(), clientes.get(k).getEdad());
                         Espectaculo e = new Espectaculo(espectaculos.get(i).getNo_Espect(), espectaculos.get(i).getNombreEspec(), espectaculos.get(i).getAforo(), espectaculos.get(i).getDescripcion(), espectaculos.get(i).getLugar(), espectaculos.get(i).getFecha_Espec(), espectaculos.get(i).getHorario_espec(), espectaculos.get(i).getPrecio(), espectaculos.get(i).getResponsable());
-
-                        System.out.println("Cliente: " + c);
-                        System.out.println("DNI cliente: " + espectaculosClientes.get(j).getCliente());
-
                         // Añado el cliente al ArrayList de clientes dentro del espectáculo elegido y luego le hago un 'set' al array de espectáculos del cliente
                         espectaculos.get(i).getClientes().add(c);
                         c.setEspectaculos(clientes.get(k).getEspectaculos());
-
                         // Añado el espectaculo al Array de espectáculos del cliente elegido y luego le hago un 'set' al array de clientes del espectáculo
                         clientes.get(k).getEspectaculos().add(e);
                         e.setClientes(espectaculos.get(i).getClientes());
-
-
-                        System.out.println("Espectaculos del cliente " + c.getNombre() + ": " + c.getEspectaculos());
                     }
-
                 }
             }
-
-            System.out.println("Clientes del espectáculo " + espectaculos.get(i).getNo_Espect() + " '" + espectaculos.get(i).getNombreEspec() + "': " + espectaculos.get(i).getClientes());
-            System.out.println();
-
-
         }
-
-
-        System.out.println("\n**************** CARGA DE DATOS DE LOS EMPLEADOS POR ESPECTACULO *****************\n");
-
-
         for (int i = 0; i < espectaculos.size(); i++) {
-            System.out.println("Posicion(i): " + i);
-            System.out.println("Espectaculo nº: " + espectaculos.get(i).getNo_Espect());
-
-
             for (int j = 0; j < espectaculosEmpleados.size(); j++) {
-
                 for (int k = 0; k < empleados.size(); k++) {
                     if (espectaculos.get(i).getNo_Espect() == espectaculosEmpleados.get(j).getEspectaculo() && empleados.get(k).getDniEmple().equalsIgnoreCase(espectaculosEmpleados.get(j).getEmpleado())) {
                         Empleado empleado = new Empleado(empleados.get(k).getDniEmple(), empleados.get(k).getNombreEmple(), empleados.get(k).getApeEmple(), empleados.get(k).getFechaNac(), empleados.get(k).getFechaContr(), empleados.get(k).getNacionalidad(), empleados.get(k).getCargo());
                         Espectaculo e = new Espectaculo(espectaculos.get(i).getNo_Espect(), espectaculos.get(i).getNombreEspec(), espectaculos.get(i).getAforo(), espectaculos.get(i).getDescripcion(), espectaculos.get(i).getLugar(), espectaculos.get(i).getFecha_Espec(), espectaculos.get(i).getHorario_espec(), espectaculos.get(i).getPrecio(), espectaculos.get(i).getResponsable());
-
-                        System.out.println("Empleado: " + empleado);
-                        System.out.println("DNI empleado: " + espectaculosEmpleados.get(j).getEmpleado());
-
                         // Añado el empleado al ArrayList de empleados dentro del espectaculo elegido y luego le hago un 'set' al array de espectáculos del empleado
                         espectaculos.get(i).getEmpleados().add(empleado);
                         empleado.setEspectaculos(empleados.get(k).getEspectaculos());
-
-
                         // Añado el espectaculo al Array de espectáculos del empleado y luego le hago un 'set' al array de empleados del espectáculo
                         empleados.get(k).getEspectaculos().add(e);
                         e.setEmpleados(espectaculos.get(k).getEmpleados());
-
-                        System.out.println("Espectaculos del empleado " + empleado.getNombreEmple() + ": " + empleado.getEspectaculos());
                     }
-
                 }
             }
-
-            System.out.println("Empleados del espectáculo " + espectaculos.get(i).getNo_Espect() + " '" + espectaculos.get(i).getNombreEspec() + "': " + espectaculos.get(i).getEmpleados());
-            System.out.println();
-        }
-
-        System.out.println("Ejemplo de clientes y empleados de el espectáculo 'El rey león':\n");
-
-        System.out.println("El rey León: " + espectaculos.get(0).getClientes());
-        System.out.println("El rey León: " + espectaculos.get(0).getEmpleados());
-
-        // Hago una comprobación, que se ha accedido a la base de datos:
-
-
-        System.out.println("\n**************** CARGA DE DATOS EN LOS ARRAYLIST DESDE LA BASE DE DATOS DE MYSQL *****************\n");
-
-        System.out.println("\nDatos del arrayList 'espectáculos':\n");
-
-        for (Espectaculo ep : espectaculos) {
-            System.out.format("%-5d%-20s%-10d%-50s%-20s%-12s%-12s%n", ep.getNo_Espect(), ep.getNombreEspec(), ep.getAforo(), ep.getDescripcion(), ep.getLugar(), ep.getFecha_Espec(), ep.getHorario_espec());
-        }
-
-        System.out.println("\nDatos del arrayList 'empleados':\n");
-
-        for (Empleado em : empleados) {
-            System.out.format("%-15s%-20s%-15s%-15s%-15s%-20s%-20s%n", em.getDniEmple(), em.getNombreEmple(), em.getApeEmple(), em.getFechaNac(), em.getFechaContr(), em.getNacionalidad(), em.getCargo());
-        }
-
-        System.out.println("\nDatos del arrayList 'clientes':\n");
-
-        for (Cliente c : clientes) {
-            System.out.format("%-20s%-20s%-20s%-5d%n", c.getDni(), c.getNombre(), c.getApellidos(), c.getEdad());
-        }
-
-        System.out.println("\nDatos del arrayList 'EspectaculosClientes':\n");
-
-        for (Espectaculos_Cliente ec : espectaculosClientes) {
-            System.out.format("%-5d%-20s%-5d%n", ec.getIdEspecCli(), ec.getCliente(), ec.getEspectaculo());
-        }
-
-        System.out.println("\nDatos del arrayList 'EspectaculosEmpleados':\n");
-
-        for (Espectaculos_Empleado ep : espectaculosEmpleados) {
-            System.out.format("%-5d%-20s%-5d%n", ep.getIdEspecEmp(), ep.getEmpleado(), ep.getEspectaculo());
         }
     }
 
@@ -769,7 +832,7 @@ public class VPrincipal_MySQL {
         comboBoxEmpleados.setModel(empleModel);
     }
 
-    private void cargar_combobox_espectaculosClientes(){
+    private void cargar_combobox_espectaculosClientes() {
         // Carga de los clientes en un model de combobox para seleccionar el responsable, luefo le paso el modelo al objeto comboBox de la ventana
         DefaultComboBoxModel<Espectaculo> espectaculoModel = new DefaultComboBoxModel<>();
 
@@ -828,6 +891,130 @@ public class VPrincipal_MySQL {
         });
     }
 
+
+    private boolean numeroCorrecto(String numero) {
+        boolean correcto = true;
+        try {
+            Double comprobaNumero = Double.parseDouble(numero);
+        } catch (NumberFormatException e) {
+            //e.printStackTrace();
+            System.out.println("Error !!, número incorrecto");
+            correcto = false;
+        }
+
+
+        return correcto;
+    }
+
+    public static String comprobarDNIcliente(ArrayList<Cliente> clientes, String campo_dni) {
+        String nombreRepe = "";
+        for (Cliente cliente : clientes) {
+            if (cliente.getDni().equalsIgnoreCase(campo_dni)) {
+                nombreRepe = cliente.getNombre() + " " + cliente.getApellidos();
+            }
+        }
+        return nombreRepe;
+    }
+
+    public static String comprobarDNIempleado(ArrayList<Empleado> empleados, String et_dniEmp) {
+        String nombreRepe = "";
+        for (Empleado empleado : empleados) {
+            if (empleado.getDniEmple().equalsIgnoreCase(et_dniEmp)) {
+                nombreRepe = empleado.getNombreEmple() + " " + empleado.getApeEmple();
+            }
+        }
+        return nombreRepe;
+    }
+
+    private boolean formatoMinutosSegundos(String duracion) {
+        boolean correcto = false;
+        String regexp = "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$"; // formato 'MMM:ss' ó 'MM:ss' ó 'M:ss'
+
+        if (Pattern.matches(regexp, duracion)) {
+            //System.out.println(Pattern.matches(regexp,duracion));
+            correcto = true;
+        } else {
+            System.out.println("Introduce un formato correcto --> 'HHH:mm' ó 'HH:mm' ó 'H:mm' ");
+        }
+
+
+        return correcto;
+    }
+
+    private boolean formatoFecha(String fecha) {
+        boolean correcto = false;
+        String regexp = "^\\d{4}\\-(0[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])$";
+
+        if (Pattern.matches(regexp, fecha)) {
+            correcto = true;
+        } else {
+            System.out.println("Introduce un formato de fecha correcta--> 'yyyy-mm-dd' ");
+        }
+
+
+        return correcto;
+    }
+
+    private boolean validarDNI(String dni) {
+        String letraMayuscula = ""; //Guardaremos la letra introducida en formato mayúscula
+
+        // Aquí excluimos cadenas distintas a 9 caracteres que debe tener un dni y también si el último caracter no es una letra
+        if (dni.length() != 9 || !Character.isLetter(dni.charAt(8))) {
+            return false;
+        }
+
+
+        // Al superar la primera restricción, la letra la pasamos a mayúscula
+        letraMayuscula = (dni.substring(8)).toUpperCase();
+
+        // Por último validamos que sólo tengo 8 dígitos entre los 8 primeros caracteres y que la letra introducida es igual a la de la ecuación
+        // Llamamos a los métodos privados de la clase soloNumeros() y letraDNI()
+        if (soloNumeros(dni) && letraDNI(dni).equals(letraMayuscula)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean soloNumeros(String dni) {
+
+        int i, j = 0;
+        String numero = ""; // Es el número que se comprueba uno a uno por si hay alguna letra entre los 8 primeros dígitos
+        String miDNI = ""; // Guardamos en una cadena los números para después calcular la letra
+        String[] unoNueve = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
+
+        for (i = 0; i < dni.length() - 1; i++) {
+            numero = dni.substring(i, i + 1);
+
+            for (j = 0; j < unoNueve.length; j++) {
+                if (numero.equals(unoNueve[j])) {
+                    miDNI += unoNueve[j];
+                }
+            }
+        }
+
+        if (miDNI.length() != 8) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private String letraDNI(String dni) {
+        // El método es privado porque lo voy a usar internamente en esta clase, no se necesita fuera de ella
+
+        // pasar miNumero a integer
+        int miDNI = Integer.parseInt(dni.substring(0, 8));
+        int resto = 0;
+        String miLetra = "";
+        String[] asignacionLetra = {"T", "R", "W", "A", "G", "M", "Y", "F", "P", "D", "X", "B", "N", "J", "Z", "S", "Q", "V", "H", "L", "C", "K", "E"};
+
+        resto = miDNI % 23;
+
+        miLetra = asignacionLetra[resto];
+
+        return miLetra;
+    }
 
 
     /*

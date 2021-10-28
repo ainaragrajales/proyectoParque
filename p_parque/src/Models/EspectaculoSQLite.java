@@ -3,6 +3,7 @@ package Models;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class EspectaculoSQLite {
 
@@ -51,6 +52,12 @@ public class EspectaculoSQLite {
         this.precio = precio;
         this.responsable = responsable;
 
+    }
+    public EspectaculoSQLite(String nombreEspec, String lugar, String fecha_Espec, String horario_espec){
+        this.nombreEspec = nombreEspec;
+        this.lugar = lugar;
+        this.fecha_Espec = fecha_Espec;
+        this.horario_espec = horario_espec;
     }
 
     public int getNo_Espect() {
@@ -125,6 +132,7 @@ public class EspectaculoSQLite {
         this.responsable = responsable;
     }
 
+
     public ArrayList<Cliente> getClientes() {
         return clientes;
     }
@@ -144,5 +152,26 @@ public class EspectaculoSQLite {
     @Override
     public String toString() {
         return nombreEspec;
+    }
+
+    public void mostrarEspectaculosSQLite(ArrayList<EspectaculoSQLite> espectaculosSQLite){
+        System.out.println("\nDatos del arrayList EspectaculosSQLite:\n");
+        System.out.format("%-5s%-20s%-10s%-50s%-20s%-12s%-12s%-20s\n","ID","ESPECTACULO", "AFORO","ESPECTACULO","LUGAR","FECHA", "HORA", "RESPONSABLE");
+
+        for (EspectaculoSQLite ep: espectaculosSQLite){
+            System.out.format("%-5d%-20s%-10d%-50s%-20s%-12s%-12s%-20s%n", ep.getNo_Espect(), ep.getNombreEspec(), ep.getAforo(), ep.getDescripcion(), ep.getLugar(), ep.getFecha_Espec(), ep.getHorario_espec(),ep.getResponsable());
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof EspectaculoSQLite espectaculoSQLite)) return false;
+        return no_Espect == espectaculoSQLite.no_Espect && aforo == espectaculoSQLite.aforo && Double.compare(espectaculoSQLite.precio, precio) == 0 && Objects.equals(nombreEspec, espectaculoSQLite.nombreEspec) && Objects.equals(descripcion, espectaculoSQLite.descripcion) && Objects.equals(lugar, espectaculoSQLite.lugar) && Objects.equals(fecha_Espec, espectaculoSQLite.fecha_Espec) && Objects.equals(horario_espec, espectaculoSQLite.horario_espec) && Objects.equals(responsable, espectaculoSQLite.responsable) && Objects.equals(clientes, espectaculoSQLite.clientes) && Objects.equals(empleadosSQLite, espectaculoSQLite.empleadosSQLite);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getNombreEspec(), getLugar(), getFecha_Espec(), getHorario_espec());
     }
 }

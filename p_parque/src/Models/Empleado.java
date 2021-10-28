@@ -2,11 +2,11 @@ package Models;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Empleado {
 
     // Atributos
-
     private String dniEmple;
     private String nombreEmple;
     private String ApeEmple;
@@ -31,6 +31,10 @@ public class Empleado {
         this.fechaContr = fechaContr;
         this.Nacionalidad = nacionalidad;
         this.cargo = cargo;
+    }
+
+    public Empleado(String dniEmple) {
+        this.dniEmple = dniEmple;
     }
 
     // Constructor vacío
@@ -105,13 +109,36 @@ public class Empleado {
         this.espectaculos = espectaculos;
     }
 
-// To String()
 
 
+    // To String()
     @Override
     public String toString() {
-        return nombreEmple;
+        return nombreEmple + " " + ApeEmple;
     }
 
+
+    public void mostrarEmpleados(ArrayList<Empleado> empleados) {
+
+        System.out.println("\nDatos del arrayList 'empleados':\n");
+        System.out.format("%-15s%-20s%-15s%-15s%-15s%-20s%-20s\n", "ID", "NOMBRE", "APELLIDOS", "NACOMIENTO", "CONTRATO", "NACIONALIDAD", "CARGO");
+
+        for (Empleado em : empleados) {
+            System.out.format("%-15s%-20s%-15s%-15s%-15s%-20s%-20s\n", em.getDniEmple(), em.getNombreEmple(), em.getApeEmple(), em.getFechaNac(), em.getFechaContr(), em.getNacionalidad(), em.getCargo());
+        }
+
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Empleado empleado)) return false;
+        return getDniEmple().equals(empleado.getDniEmple());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getDniEmple());
+    }
 
 }

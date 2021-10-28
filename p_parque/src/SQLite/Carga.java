@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class Carga {
 
-
+    //Cargar desde la base de datos las listas de espectaculos, empleados, clientes, clienteEspectaculos, empleadoEspectaculos
     public ArrayList<Cliente> listaClientesSQLite() {
         ArrayList<Cliente> clientes = new ArrayList<>();
 
@@ -231,6 +231,7 @@ public class Carga {
         return espectaculosEmpleados;
     }
 
+    //Funciones para añadir, modificar y eliminar Clientes
     public void clienteNuevo(Cliente cliente) {
 
         PreparedStatement ps;
@@ -262,7 +263,65 @@ public class Carga {
             e.printStackTrace();
         }
     }
+    public void modificarCliente(Cliente cliente){
+        PreparedStatement ps;
+        String sql;
 
+        try {
+            Class.forName("org.sqlite.JDBC");
+
+            Connection conexion =  DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
+
+            Statement sentencia = conexion.createStatement();
+            sql = "update clientes set  nombreCli=?, ApesCli=?, edad=? where dniCli=?";
+
+            ps =  conexion.prepareStatement(sql);
+            ps.setString(1, cliente.getNombre());
+            ps.setString(2, cliente.getApellidos());
+            ps.setInt(3, cliente.getEdad());
+            ps.setString(4, cliente.getDni());
+
+            ps.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Se han insertado los datos");
+
+            sentencia.close();
+            conexion.close();
+
+
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public void eliminarCliente(Cliente cliente){
+        PreparedStatement ps;
+        String sql;
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+
+            Connection conexion =  DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
+
+            Statement sentencia = conexion.createStatement();
+            sql = "delete from clientes where dniCli=?";
+
+            ps =  conexion.prepareStatement(sql);
+            ps.setString(1, cliente.getDni());
+
+            ps.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Se han insertado los datos");
+
+            sentencia.close();
+            conexion.close();
+
+
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Funciones para añadir, modificar y eliminar Empleados
     public void empleadoNuevo(EmpleadoSQLite empleado) {
 
         PreparedStatement ps;
@@ -296,7 +355,70 @@ public class Carga {
             e.printStackTrace();
         }
     }
+    public void modificarEmpleado(EmpleadoSQLite empleado){
+        PreparedStatement ps;
+        String sql;
 
+        try {
+            Class.forName("org.sqlite.JDBC");
+
+            Connection conexion =  DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
+
+            Statement sentencia = conexion.createStatement();
+            sql = "update empleados set  nombreEmple=?, ApeEmple=?, f_Nac_Emple=?, lugar=?, f_Cont_Emple=?, nacionalidad=?, cargo=? where dniEmple=?";
+
+            ps =  conexion.prepareStatement(sql);
+            ps.setString(1, empleado.getNombreEmple());
+            ps.setString(2, empleado.getApeEmple());
+            ps.setString(3, empleado.getFechaNac());
+            ps.setString(4, empleado.getFechaContr());
+            ps.setString(5, empleado.getNacionalidad());
+            ps.setString(6, empleado.getCargo());
+            ps.setString(7, empleado.getDniEmple());
+
+            ps.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Se han insertado los datos");
+
+            sentencia.close();
+            conexion.close();
+
+
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public void eliminarEmpleado(EmpleadoSQLite empleado){
+        PreparedStatement ps;
+        String sql;
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+
+            Connection conexion =  DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
+
+            Statement sentencia = conexion.createStatement();
+            sql = "delete from empleados where dniEmple=?";
+
+            ps =  conexion.prepareStatement(sql);
+            ps.setString(1, empleado.getDniEmple());
+
+
+            ps.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Se ha borrado el empleado " + empleado.getNombreEmple());
+
+            sentencia.close();
+            conexion.close();
+
+
+        } catch (ClassNotFoundException | SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error" + e.getMessage());
+        }
+    }
+
+
+    //Funciones para añadir, modificar y eliminar Espectaculos
     public void espectaculoNuevo(EspectaculoSQLite espectaculo) {
 
         PreparedStatement ps;
@@ -332,72 +454,6 @@ public class Carga {
             e.printStackTrace();
         }
     }
-
-    public void modificarCliente(Cliente cliente){
-        PreparedStatement ps;
-        String sql;
-
-        try {
-            Class.forName("org.sqlite.JDBC");
-
-            Connection conexion =  DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
-
-            Statement sentencia = conexion.createStatement();
-            sql = "update clientes set  nombreCli=?, ApesCli=?, edad=? where dniCli=?";
-
-            ps =  conexion.prepareStatement(sql);
-            ps.setString(1, cliente.getNombre());
-            ps.setString(2, cliente.getApellidos());
-            ps.setInt(3, cliente.getEdad());
-            ps.setString(4, cliente.getDni());
-
-            ps.executeUpdate();
-
-            JOptionPane.showMessageDialog(null, "Se han insertado los datos");
-
-            sentencia.close();
-            conexion.close();
-
-
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void modificarEmpleado(EmpleadoSQLite empleado){
-        PreparedStatement ps;
-        String sql;
-
-        try {
-            Class.forName("org.sqlite.JDBC");
-
-            Connection conexion =  DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
-
-            Statement sentencia = conexion.createStatement();
-            sql = "update empleados set  nombreEmple=?, ApeEmple=?, f_Nac_Emple=?, lugar=?, f_Cont_Emple=?, nacionalidad=?, cargo=? where dniEmple=?";
-
-            ps =  conexion.prepareStatement(sql);
-            ps.setString(1, empleado.getNombreEmple());
-            ps.setString(2, empleado.getApeEmple());
-            ps.setString(3, empleado.getFechaNac());
-            ps.setString(4, empleado.getFechaContr());
-            ps.setString(5, empleado.getNacionalidad());
-            ps.setString(6, empleado.getCargo());
-            ps.setString(7, empleado.getDniEmple());
-
-            ps.executeUpdate();
-
-            JOptionPane.showMessageDialog(null, "Se han insertado los datos");
-
-            sentencia.close();
-            conexion.close();
-
-
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void modificarEspectaculo(EspectaculoSQLite espectaculo){
         PreparedStatement ps;
         String sql;
@@ -432,64 +488,6 @@ public class Carga {
             e.printStackTrace();
         }
     }
-
-    public void eliminarCliente(Cliente cliente){
-        PreparedStatement ps;
-        String sql;
-
-        try {
-            Class.forName("org.sqlite.JDBC");
-
-            Connection conexion =  DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
-
-            Statement sentencia = conexion.createStatement();
-            sql = "delete from clientes where dniCli=?";
-
-            ps =  conexion.prepareStatement(sql);
-            ps.setString(1, cliente.getDni());
-
-            ps.executeUpdate();
-
-            JOptionPane.showMessageDialog(null, "Se han insertado los datos");
-
-            sentencia.close();
-            conexion.close();
-
-
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void eliminarEmpleado(EmpleadoSQLite empleado){
-        PreparedStatement ps;
-        String sql;
-
-        try {
-            Class.forName("org.sqlite.JDBC");
-
-            Connection conexion =  DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
-
-            Statement sentencia = conexion.createStatement();
-            sql = "delete from empleados where dniEmple=?";
-
-            ps =  conexion.prepareStatement(sql);
-            ps.setString(1, empleado.getDniEmple());
-
-
-            ps.executeUpdate();
-
-            JOptionPane.showMessageDialog(null, "Se ha borrado el empleado " + empleado.getNombreEmple());
-
-            sentencia.close();
-            conexion.close();
-
-
-        } catch (ClassNotFoundException | SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error" + e.getMessage());
-        }
-    }
-
     public void eliminarEspectaculo(EspectaculoSQLite espectaculo){
         PreparedStatement ps;
         String sql;
@@ -518,8 +516,6 @@ public class Carga {
             JOptionPane.showMessageDialog(null, "Error" + e.getMessage());
         }
     }
-
-
     public int idMaxEspectaculos() {
 
         EspectaculoSQLite espectaculo = null;
@@ -565,10 +561,69 @@ public class Carga {
     }
 
 
+    //Funciones para añadir y eliminar clienteEspectaculos
+    public void anadirClienteEspectaculoSQLite(String dniCliSQLite, int idEspectSQLite) {
+        PreparedStatement ps;
+        String sql;
+        try {
+            Class.forName("org.sqlite.JDBC");
 
-    public void anadirEmpleadoEspectaculo( String dniEmple,int idEspectaculo) {
+            //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
+            Connection conexion = DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
 
-        java.sql.PreparedStatement ps;
+            Statement sentencia = (Statement) conexion.createStatement();
+
+            sql = "insert into Espectaculos_Clientes(Cliente, Espectaculo) values (?,?)";
+
+            ps = conexion.prepareStatement(sql);
+
+            ps.setString(1, dniCliSQLite);
+            ps.setInt(2, idEspectSQLite);
+
+            ps.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Se han insertado los datos");
+
+            sentencia.close();
+            conexion.close();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Error" + e.getMessage());
+        }
+    }
+    public void eliminarEspectaculoClienteSQLite(Espectaculos_Cliente espectaculoClienteSQLite) {
+        PreparedStatement ps;
+        String sql;
+        try {
+            Class.forName("org.sqlite.JDBC");
+
+            //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
+            Connection conexion = DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
+
+            Statement sentencia = conexion.createStatement();
+
+            sql = "delete from Espectaculos_Clientes where Cliente=? and Espectaculo=?";
+
+            ps = conexion.prepareStatement(sql);
+            ps.setString(1, espectaculoClienteSQLite.getCliente());
+            ps.setInt(2, espectaculoClienteSQLite.getEspectaculo());
+
+
+            ps.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Se ha borrado el espectaculo ");
+
+            sentencia.close();
+            conexion.close();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Error" + e.getMessage());
+        }
+    }
+
+    public void anadirEmpleadoEspectaculoSQLite(String dniEmple, int idEspectaculo) {
+
+        PreparedStatement ps;
         String sql;
 
         try {
@@ -600,6 +655,37 @@ public class Carga {
 
     }
 
+    public void eliminarEmpleadoEspectaculoSQLite(Espectaculos_Empleado espectEmpleSQLite){
+        PreparedStatement ps;
+        String sql;
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+
+            //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
+            Connection conexion = DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
+
+
+            Statement sentencia = conexion.createStatement();
+            sql = "delete from Espectaculos_Empleados where Empleado=? and Espectaculo=?";
+
+            ps = conexion.prepareStatement(sql);
+
+            ps.setString(1, espectEmpleSQLite.getEmpleado());
+            ps.setInt(2, espectEmpleSQLite.getEspectaculo());
+
+            ps.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Se ha borrado el espectaculo ");
+
+            sentencia.close();
+            conexion.close();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Error" + e.getMessage());
+        }
+
+    }
 
 
     public String infoMySql(JTextArea infoJtextArea) {

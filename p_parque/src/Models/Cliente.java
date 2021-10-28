@@ -106,4 +106,15 @@ public class Cliente {
         return String.format("%10s, %s", cadena, dni);
     }
 
+    public void mostrarClientes(ArrayList<Cliente>clientes){
+
+        System.out.println("\nDatos del arrayList 'clientes':\n");
+        System.out.format("%-20s%-20s%-20s%-5s\n","ID_DNI","NOMBRE","APELLIDOS","EDAD");
+
+        for (Cliente c : clientes) {
+            System.out.format("%-20s%-20s%-20s%-5d\n", c.getDni(), c.getNombre(), c.getApellidos(), c.getEdad());
+        }
+
+    }
+
 }

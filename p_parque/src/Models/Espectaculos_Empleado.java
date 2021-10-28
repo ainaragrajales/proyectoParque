@@ -1,6 +1,7 @@
 package Models;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Espectaculos_Empleado {
 
@@ -57,11 +58,7 @@ public class Espectaculos_Empleado {
     // To String()
     @Override
     public String toString() {
-        return "Espectaculos_Empleado{" +
-                "idEspecEmp=" + idEspecEmp +
-                ", empleado='" + empleado + '\'' +
-                ", espectaculo=" + espectaculo +
-                '}';
+        return idEspecEmp+" "+ empleado+ " "+espectaculo;
     }
 
     public void mostrarEspectaculosEmpleados(ArrayList<Espectaculos_Empleado> espectaculosEmpleados) {
@@ -72,6 +69,18 @@ public class Espectaculos_Empleado {
         for (Espectaculos_Empleado ep : espectaculosEmpleados) {
             System.out.format("%-5d%-20s%-5d\n", ep.getIdEspecEmp(), ep.getEmpleado(), ep.getEspectaculo());
         }
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Espectaculos_Empleado)) return false;
+        Espectaculos_Empleado that = (Espectaculos_Empleado) o;
+        return getEspectaculo() == that.getEspectaculo() && getEmpleado().equals(that.getEmpleado());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getEmpleado(), getEspectaculo());
     }
 }

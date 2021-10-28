@@ -3,12 +3,12 @@ package Models;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class Espectaculo {
 
     // Atributos
-
     private int no_Espect;
     private String nombreEspec;
     private int aforo;
@@ -19,7 +19,6 @@ public class Espectaculo {
     private double precio;
     private String responsable;
 
-    //lo mejor sería hacer un campo que sea fecha_hora y hacerlo con el DateFormatter
 
     // Relaciones con las otras clases 1 espectaculo tiene muchos clientes y tiene muchos empleados
     // IMPORTANTE al declarar el ArrayList, poner al final '=new ArrayList<>()' porque sino nos genera un 'NullPointerexception'
@@ -39,6 +38,13 @@ public class Espectaculo {
         this.horario_espec = horario_espec;
         this.precio=precio;
         this.responsable = responsable;
+    }
+
+    public Espectaculo(String nombreEspec, String lugar, Date fecha_Espec, Time horario_espec) {
+        this.nombreEspec = nombreEspec;
+        this.lugar = lugar;
+        this.fecha_Espec = fecha_Espec;
+        this.horario_espec = horario_espec;
     }
 
     // Constructor vacío
@@ -157,6 +163,29 @@ public class Espectaculo {
     @Override
     public String toString() {
         return nombreEspec;
+    }
+
+    public void mostrarEspectaculos(ArrayList<Espectaculo>espectaculos){
+        System.out.println("\nDatos del arrayList 'espectáculos':\n");
+        System.out.format("%-5s%-20s%-10s%-50s%-20s%-12s%-12s%-20s\n","ID","ESPECTACULO", "AFORO","ESPECTACULO","LUGAR","FECHA", "HORA", "RESPONSABLE");
+
+        for (Espectaculo ep : espectaculos) {
+            System.out.format("%-5d%-20s%-10d%-50s%-20s%-12s%-12s%-20s%n", ep.getNo_Espect(), ep.getNombreEspec(), ep.getAforo(), ep.getDescripcion(), ep.getLugar(), ep.getFecha_Espec(), ep.getHorario_espec(),ep.getResponsable());
+        }
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Espectaculo)) return false;
+        Espectaculo that = (Espectaculo) o;
+        return getNombreEspec().equalsIgnoreCase(that.getNombreEspec()) && getLugar().equalsIgnoreCase(that.getLugar()) && getFecha_Espec().equals(that.getFecha_Espec()) && getHorario_espec().equals(that.getHorario_espec());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getNombreEspec(), getLugar(), getFecha_Espec(), getHorario_espec());
     }
 
 }

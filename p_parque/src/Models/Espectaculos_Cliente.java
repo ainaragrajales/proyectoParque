@@ -1,6 +1,7 @@
 package Models;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Espectaculos_Cliente {
 
@@ -72,7 +73,18 @@ public class Espectaculos_Cliente {
         for (Espectaculos_Cliente ec : espectaculosClientes) {
             System.out.format("%-5d%-15s%-20d\n", ec.getIdEspecCli(), ec.getCliente(), ec.getEspectaculo());
         }
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Espectaculos_Cliente)) return false;
+        Espectaculos_Cliente that = (Espectaculos_Cliente) o;
+        return getEspectaculo() == that.getEspectaculo() && getCliente().equals(that.getCliente());
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(getCliente(), getEspectaculo());
     }
 }
