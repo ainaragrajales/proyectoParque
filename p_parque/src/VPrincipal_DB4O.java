@@ -74,11 +74,8 @@ public class VPrincipal_DB4O {
     private JScrollPane resultadoClientesEspectaculos;
     private JList<EmpleadoDB4o> listaEmpleadosEspectaculos;
     private JScrollPane resultadoEmpleadosEspectaculos;
-    private JLabel lb_infoMySql;
-    private JTextArea textAreaInfoMySql;
-    private JButton infoButton;
     private JLabel lb_responsable;
-    private JComboBox<String> comboBoxEmpleadosDB4o;
+    private JComboBox<EmpleadoDB4o> comboBoxEmpleadosDB4o;
     private JButton bt_salir;
     private JButton bt_AnadirEspecCliente;
     private JButton bt_BorrarEspecCliente;
@@ -387,7 +384,7 @@ public class VPrincipal_DB4O {
             bt_GuardarEspectaculo.setVisible(false);
         });
         bt_GuardarEspectaculo.addActionListener(e -> {
-            if (!comprobarCamposVaciosEmpleado()) {
+            if (!comprobarCamposVaciosEspectaculo()) {
                 panelMensajePersonalizado("Campos Vacíos", "No puede haber campos vacíos. Comprueba todos los campos", 0);
             } else if (!et_ID_Espec.isEnabled()) {
                 String errores = "";
@@ -421,7 +418,7 @@ public class VPrincipal_DB4O {
                     int idInt = Integer.parseInt(idString);
                     int aforoInt = Integer.parseInt(aforoString);
                     double precioDouble = Double.parseDouble(precioString);
-                    String responsable = String.valueOf(comboBoxEmpleadosDB4o.getSelectedItem());
+                    //String responsable = String.valueOf(comboBoxEmpleadosDB4o.getSelectedItem());
                     EmpleadoDB4o empDB4o = (EmpleadoDB4o) comboBoxEmpleadosDB4o.getSelectedItem();
 
                     espectaculo = new EspectaculoDB4o(idInt, et_Espectaculo.getText(), aforoInt, et_Descripcion.getText(), et_lugar.getText(), String.valueOf(et_fecha.getText()), et_horario.getText(), precioDouble, empDB4o);
@@ -431,9 +428,6 @@ public class VPrincipal_DB4O {
                     }
                     new DB4o.Insertar_Editar().insertarEditarEspectaculo(espectaculo);
                 }
-
-                CargaryRefrescarTodo();
-
 
             } else {
                 String errores = "";
@@ -467,7 +461,7 @@ public class VPrincipal_DB4O {
                     int idInt = Integer.parseInt(idString);
                     int aforoInt = Integer.parseInt(aforoString);
                     double precioDouble = Double.parseDouble(precioString);
-                    String responsable = String.valueOf(comboBoxEmpleadosDB4o.getSelectedItem());
+                    //String responsable = String.valueOf(comboBoxEmpleadosDB4o.getSelectedItem());
                     EmpleadoDB4o empDB4o = (EmpleadoDB4o) comboBoxEmpleadosDB4o.getSelectedItem();
 
                     espectaculo = new EspectaculoDB4o(idInt, et_Espectaculo.getText(), aforoInt, et_Descripcion.getText(), et_lugar.getText(), String.valueOf(et_fecha.getText()), et_horario.getText(), precioDouble, empDB4o);
@@ -477,12 +471,10 @@ public class VPrincipal_DB4O {
                     }
                     new DB4o.Insertar_Editar().insertarEditarEspectaculo(espectaculo);
                 }
-
-                CargaryRefrescarTodo();
-
             }
             limpiarCampos();
             bt_GuardarEspectaculo.setVisible(false);
+            CargaryRefrescarTodo();
         });
 
         //Botones de CLientesEspectaculos
@@ -537,10 +529,6 @@ public class VPrincipal_DB4O {
         empleadosEspectaculos = new DB4o.CargarDatos().cargarEspectaculosEmpleado(listaEmpleadosEspectaculos.getSelectedValue());
     }
 
-    public void cargar_tablas_relacionones() {
-
-    }
-
     private void cargar_j_list_clientes() {
         DefaultListModel<ClienteDB4o> model = new DefaultListModel<>();
         for (ClienteDB4o cliente1 : clientes) {
@@ -567,10 +555,10 @@ public class VPrincipal_DB4O {
     }
 
     private void cargar_combobox_responsables() {
-        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+        DefaultComboBoxModel<EmpleadoDB4o> model = new DefaultComboBoxModel<>();
         for (EmpleadoDB4o empleado1 : empleados) {
             //String nombreEmp = empleado1.getNombre();
-            model.addElement(empleado1.getNombre());
+            model.addElement(empleado1);
         }
         comboBoxEmpleadosDB4o.setModel(model);
     }
@@ -626,9 +614,9 @@ public class VPrincipal_DB4O {
 
         if (clienteDB4o != null) {
             campo_dni.setText(clienteDB4o.getDni());
-            campo_nombre.setText(cliente.getNombre());
-            campo_apellido.setText(cliente.getApellidos());
-            campo_edad.setText(String.valueOf(cliente.getEdad()));
+            campo_nombre.setText(clienteDB4o.getNombre());
+            campo_apellido.setText(clienteDB4o.getApellidos());
+            campo_edad.setText(String.valueOf(clienteDB4o.getEdad()));
         }
         //campo_dni.setEnabled(false);
     }
@@ -636,7 +624,7 @@ public class VPrincipal_DB4O {
     private void actualizarEmpleados() {
         EmpleadoDB4o empleadoDB4o = listaEmpleados.getSelectedValue();
         if (empleadoDB4o != null) {
-            et_dni.setText(empleadoDB4o.getDni());
+            et_dniEmp.setText(empleadoDB4o.getDni());
             et_emple.setText(empleadoDB4o.getNombre());
             et_apeEmple.setText(empleadoDB4o.getPrimerApellido());
             et_NacEmp.setText(empleadoDB4o.getFechaNac());
@@ -743,6 +731,7 @@ public class VPrincipal_DB4O {
         et_fecha.setText("");
         et_horario.setText("");
         et_precio.setText("");
+        comboBoxEmpleadosDB4o.removeAllItems();
     }
 
     //Funciones para comprobar si los datos añadidos son del formato adecuado
