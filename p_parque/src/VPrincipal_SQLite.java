@@ -105,6 +105,15 @@ public class VPrincipal_SQLite {
 
     public VPrincipal_SQLite() {
 
+        //Comprobar si el usuario conectado es el Admin y mostrar u ocultar la informacion de la base de datos
+        if(VAccesoSQLite.usuarioSQLite.equalsIgnoreCase("Admin") && VAccesoSQLite.passwdBDSQLite.equalsIgnoreCase("0000")){
+            infoButton.setEnabled(true);
+        } else {
+            infoButton.setEnabled(false);
+            textAreaInfoMySql.setText("Acceso Denegado");
+            textAreaInfoMySql.setEditable(false);
+        }
+
         //Funcion para hacer todas las cargas y refrescar datos
         CargaryRefrescarTodoSQLite();
 
@@ -601,7 +610,7 @@ public class VPrincipal_SQLite {
             textAreaInfoMySql.setText(infoBaseDatos);
         });
         bt_salir.addActionListener(e -> {
-            //VAccesoMySql.estasConectado=false;
+            VAccesoSQLite.estasConectado=false;
             JOptionPane.showMessageDialog(null, "Adios");
             JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(VPanelPrincipal);
             topFrame.dispose();
@@ -613,6 +622,7 @@ public class VPrincipal_SQLite {
     }
 
 
+    //Funciones de carga y refrescado de todos los datos de SQLite
     public void CargaryRefrescarTodoSQLite() {
         cargaDatosSQLite();
         cargar_tablas_relaciones_SQLite();
@@ -624,7 +634,6 @@ public class VPrincipal_SQLite {
         cargar_j_list_jtable_espectaculosClientesSQLite();
         cargar_j_list_jtable_espectaculosEmpleadosSQLite();
     }
-
     public void cargaDatosSQLite() {
         empleadosSQLite = new SQLite.Carga().listaEmpleadosSQLite();
 
@@ -636,7 +645,6 @@ public class VPrincipal_SQLite {
 
         espectaculosEmpleadosSQLite = new SQLite.Carga().listaEmpleadosEspetaculosSQLite();
     }
-
     private void cargar_tablas_relaciones_SQLite() {
         for (int i = 0; i < espectaculosSQLite.size(); i++) {
             for (int j = 0; j < espectaculosClientesSQLite.size(); j++) {
@@ -672,7 +680,6 @@ public class VPrincipal_SQLite {
             }
         }
     }
-
     private void cargar_j_list_clientesSQLite() {
         DefaultListModel<Cliente> model = new DefaultListModel<>();
         for (Cliente cliente : clientesSQLite) {
@@ -680,7 +687,6 @@ public class VPrincipal_SQLite {
         }
         list_clientesSQLite.setModel(model);
     }
-
     private void cargar_j_list_empleadosSQLite() {
         DefaultListModel<EmpleadoSQLite> model = new DefaultListModel<>();
         for (EmpleadoSQLite empleado : empleadosSQLite) {
@@ -688,7 +694,6 @@ public class VPrincipal_SQLite {
         }
         listaEmpleadosSQLite.setModel(model);
     }
-
     private void cargar_j_list_espectaculosSQLite() {
         DefaultListModel<EspectaculoSQLite> model = new DefaultListModel<>();
         for (EspectaculoSQLite espectaculo : espectaculosSQLite) {
@@ -696,7 +701,6 @@ public class VPrincipal_SQLite {
         }
         listaEspectaculosSQLite.setModel(model);
     }
-
     private void cargar_combobox_responsablesSQLite() {
         // Carga de los empleados en un model de combobox para seleccionar el responsable, luefo le paso el modelo al objeto comboBox de la ventana
         DefaultComboBoxModel<EmpleadoSQLite> empleModel = new DefaultComboBoxModel<>();
@@ -705,7 +709,6 @@ public class VPrincipal_SQLite {
         }
         comboBoxEmpleadosSQLite.setModel(empleModel);
     }
-
     private void cargar_combobox_espectaculosClientesSQLite() {
         // Carga de los clientes en un model de combobox para seleccionar el responsable, luefo le paso el modelo al objeto comboBox de la ventana
         DefaultComboBoxModel<EspectaculoSQLite> espectaculoModel = new DefaultComboBoxModel<>();
@@ -715,7 +718,6 @@ public class VPrincipal_SQLite {
         comboBoxEspectaculosSQLite.setModel(espectaculoModel);
         comboBoxEspectaculosSQLite2.setModel(espectaculoModel);
     }
-
     private void cargar_j_list_jtable_espectaculosClientesSQLite() {
         // Jlist clientes Jtable espectaculos
         DefaultListModel<Cliente> modelClienteEspectaculo = new DefaultListModel<>();
@@ -731,7 +733,6 @@ public class VPrincipal_SQLite {
             System.out.println(listadoClientesEspectaculosSQLite.getSelectedValue().getEspectaculosSQLite());
         });
     }
-
     private void cargar_j_list_jtable_espectaculosEmpleadosSQLite() {
         // Jlist empleados Jtable espectaculos
         DefaultListModel<EmpleadoSQLite> modelEmpleadoEspectaculo = new DefaultListModel<>();
@@ -747,7 +748,47 @@ public class VPrincipal_SQLite {
             System.out.println(listaEmpleadosEspectaculosSQLite.getSelectedValue().getEspectaculosSQLite());
         });
     }
+    public void actualizarClientesSQLite() {
+        Cliente cliente = list_clientesSQLite.getSelectedValue();
 
+        if (cliente != null) {
+            campo_dni.setText(cliente.getDni());
+            campo_nombre.setText(cliente.getNombre());
+            campo_apellido.setText(cliente.getApellidos());
+            campo_edad.setText(String.valueOf(cliente.getEdad()));
+        }
+    }
+    public void actualizarEmpleadosSQLite() {
+        EmpleadoSQLite empleado = listaEmpleadosSQLite.getSelectedValue();
+
+        if (empleado != null) {
+            et_dniEmp.setText(empleado.getDniEmple());
+            et_emple.setText(empleado.getNombreEmple());
+            et_apeEmple.setText(empleado.getApeEmple());
+            et_NacEmp.setText(String.valueOf(empleado.getFechaNac()));
+            et_fechaContrEmp.setText(String.valueOf(empleado.getFechaContr()));
+            et_NacioEmpl.setText(String.valueOf(empleado.getNacionalidad()));
+            et_CargoEmpl.setText(String.valueOf(empleado.getCargo()));
+        }
+    }
+    public void actualizarEspectaculosSQLite() {
+        EspectaculoSQLite espectaculo = listaEspectaculosSQLite.getSelectedValue();
+
+        if (espectaculo != null) {
+            et_ID_Espec.setText(String.valueOf(espectaculo.getNo_Espect()));
+            et_Espectaculo.setText(espectaculo.getNombreEspec());
+            et_aforo.setText(String.valueOf(espectaculo.getAforo()));
+            et_Descripcion.setText(espectaculo.getDescripcion());
+            et_lugar.setText(espectaculo.getLugar());
+            et_fecha.setText(String.valueOf(espectaculo.getFecha_Espec()));
+            et_horario.setText(String.valueOf(espectaculo.getHorario_espec()));
+            et_precio.setText(String.valueOf(espectaculo.getPrecio()));
+            comboBoxEmpleadosSQLite.setSelectedItem(espectaculo.getResponsable());
+        }
+    }
+
+
+    //Funciones para comprobar si los datos añadidos son del formato adecuado
     private boolean formatoMinutosSegundos(String duracion) {
         boolean correcto = false;
         String regexp = "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$"; // formato 'MMM:ss' ó 'MM:ss' ó 'M:ss'
@@ -762,7 +803,6 @@ public class VPrincipal_SQLite {
 
         return correcto;
     }
-
     private boolean numeroCorrecto(String numero) {
         boolean correcto = true;
         try {
@@ -776,7 +816,6 @@ public class VPrincipal_SQLite {
 
         return correcto;
     }
-
     private boolean validarDNI(String dni) {
         String letraMayuscula = ""; //Guardaremos la letra introducida en formato mayúscula
 
@@ -797,7 +836,6 @@ public class VPrincipal_SQLite {
             return false;
         }
     }
-
     private boolean soloNumeros(String dni) {
 
         int i, j = 0;
@@ -821,7 +859,6 @@ public class VPrincipal_SQLite {
             return true;
         }
     }
-
     private String letraDNI(String dni) {
         // El método es privado porque lo voy a usar internamente en esta clase, no se necesita fuera de ella
 
@@ -837,7 +874,6 @@ public class VPrincipal_SQLite {
 
         return miLetra;
     }
-
     private boolean formatoFecha(String fecha) {
         boolean correcto = false;
         String regexp = "^\\d{4}\\-(0[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])$";
@@ -851,7 +887,6 @@ public class VPrincipal_SQLite {
 
         return correcto;
     }
-
     private String comprobarDNIempleado(ArrayList<EmpleadoSQLite> empleadosSQLite, String et_dniEmp) {
         String nombreRepeSQLite = "";
         for (EmpleadoSQLite empleSQLite: empleadosSQLite){
@@ -861,7 +896,6 @@ public class VPrincipal_SQLite {
         }
         return nombreRepeSQLite;
     }
-
     public static String comprobarDNIcliente(ArrayList<Cliente> clientes, String campo_dni) {
         String nombreRepe = "";
         for (Cliente cliente : clientes) {
@@ -873,47 +907,8 @@ public class VPrincipal_SQLite {
     }
 
 
-    public void actualizarClientesSQLite() {
-        Cliente cliente = list_clientesSQLite.getSelectedValue();
 
-        if (cliente != null) {
-            campo_dni.setText(cliente.getDni());
-            campo_nombre.setText(cliente.getNombre());
-            campo_apellido.setText(cliente.getApellidos());
-            campo_edad.setText(String.valueOf(cliente.getEdad()));
-        }
-    }
-
-    public void actualizarEmpleadosSQLite() {
-        EmpleadoSQLite empleado = listaEmpleadosSQLite.getSelectedValue();
-
-        if (empleado != null) {
-            et_dniEmp.setText(empleado.getDniEmple());
-            et_emple.setText(empleado.getNombreEmple());
-            et_apeEmple.setText(empleado.getApeEmple());
-            et_NacEmp.setText(String.valueOf(empleado.getFechaNac()));
-            et_fechaContrEmp.setText(String.valueOf(empleado.getFechaContr()));
-            et_NacioEmpl.setText(String.valueOf(empleado.getNacionalidad()));
-            et_CargoEmpl.setText(String.valueOf(empleado.getCargo()));
-        }
-    }
-
-    public void actualizarEspectaculosSQLite() {
-        EspectaculoSQLite espectaculo = listaEspectaculosSQLite.getSelectedValue();
-
-        if (espectaculo != null) {
-            et_ID_Espec.setText(String.valueOf(espectaculo.getNo_Espect()));
-            et_Espectaculo.setText(espectaculo.getNombreEspec());
-            et_aforo.setText(String.valueOf(espectaculo.getAforo()));
-            et_Descripcion.setText(espectaculo.getDescripcion());
-            et_lugar.setText(espectaculo.getLugar());
-            et_fecha.setText(String.valueOf(espectaculo.getFecha_Espec()));
-            et_horario.setText(String.valueOf(espectaculo.getHorario_espec()));
-            et_precio.setText(String.valueOf(espectaculo.getPrecio()));
-            comboBoxEmpleadosSQLite.setSelectedItem(espectaculo.getResponsable());
-        }
-    }
-
+//Funciones de comprobar y limpiar campos
     private void limpiarCampos() {
 
         campo_edad.setText("");
@@ -942,7 +937,6 @@ public class VPrincipal_SQLite {
         //mirar el combobox
 
     }
-
     private boolean comprobarCamposVaciosEspectaculosSQLite() {
         boolean hayDato = true;
         ArrayList<JTextField> campos = new ArrayList<>();
@@ -962,7 +956,6 @@ public class VPrincipal_SQLite {
         }
         return hayDato;
     }
-
     private boolean comprobarCamposVaciosClientesSQLite() {
 
         boolean hayDato = true;
@@ -979,7 +972,6 @@ public class VPrincipal_SQLite {
         }
         return hayDato;
     }
-
     private boolean comprobarCamposVaciosEmpleadosSQLite() {
 
         boolean hayDato = true;
@@ -997,6 +989,7 @@ public class VPrincipal_SQLite {
         return hayDato;
     }
 
+    //Funcion de panel de mensaje personalizado
     public void panelMensajePersonalizado(String titulo, String mensaje, int tipo) {
         JButton okButton = new JButton("OK");
         okButton.setFocusPainted(false);
@@ -1011,7 +1004,4 @@ public class VPrincipal_SQLite {
         return VPanelPrincipal;
     }
 
-    public static void main(String[] args) {
-
-    }
 }

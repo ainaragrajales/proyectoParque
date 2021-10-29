@@ -113,6 +113,21 @@ public class VPrincipal_MySQL {
     private Espectaculos_Cliente espectaculosCliente;
 
     public VPrincipal_MySQL() {
+
+        //Comprobar si el usuario conectado es el Admin y mostrar u ocultar la informacion de la base de datos
+        if(VAccesoMySQL.usuarioMySQL.equalsIgnoreCase("Admin") && VAccesoMySQL.passwordBDMySQL.equalsIgnoreCase("0000")){
+            infoButton.setEnabled(true);
+            System.out.println(VAccesoSQLite.usuarioSQLite);
+            System.out.println(VAccesoSQLite.passwdBDSQLite);
+        } else {
+            System.out.println(VAccesoSQLite.usuarioSQLite);
+            System.out.println(VAccesoSQLite.passwdBDSQLite);
+            infoButton.setEnabled(false);
+            textAreaInfoMySql.setText("Acceso Denegado");
+            textAreaInfoMySql.setEditable(false);
+        }
+
+
         //Funcion para hacer todas las cargas y refrescar datos
         CargaryRefrescarTodo();
 
@@ -726,14 +741,15 @@ public class VPrincipal_MySQL {
         });
 
         bt_salir.addActionListener(e -> {
-            //VAccesoMySql.estasConectado=false;
+            VAccesoMySQL.estasConectado=false;
             JOptionPane.showMessageDialog(null, "Adios");
             JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(VPanelPrincipal);
             topFrame.dispose();
+
         });
     }
 
-
+    //Funciones de carga y refrescado de todos los datos de MySQL
     public void CargaryRefrescarTodo() {
         cargaDatos();
         cargar_tablas_relaciones();
@@ -746,7 +762,6 @@ public class VPrincipal_MySQL {
         cargar_j_list_jtable_espectaculosEmpleados();
 
     }
-
     public void cargaDatos() {
 
         empleados = new Carga().listaEmpleados();
@@ -760,7 +775,6 @@ public class VPrincipal_MySQL {
         espectaculosEmpleados = new Carga().listaEmpleadosEspectaculo();
 
     }
-
     private void cargar_tablas_relaciones() {
         for (int i = 0; i < espectaculos.size(); i++) {
             for (int j = 0; j < espectaculosClientes.size(); j++) {
@@ -796,7 +810,6 @@ public class VPrincipal_MySQL {
             }
         }
     }
-
     public void cargar_j_list_clientes() {
         DefaultListModel<Cliente> model = new DefaultListModel<>();
         for (Cliente cliente : clientes) {
@@ -804,7 +817,6 @@ public class VPrincipal_MySQL {
         }
         list_clientes.setModel(model);
     }
-
     public void cargar_j_list_empleados() {
         DefaultListModel<Empleado> model = new DefaultListModel<>();
         for (Empleado empleado : empleados) {
@@ -812,7 +824,6 @@ public class VPrincipal_MySQL {
         }
         listaEmpleados.setModel(model);
     }
-
     public void cargar_j_list_espectaculos() {
         DefaultListModel<Espectaculo> model = new DefaultListModel<>();
         for (Espectaculo espectaculo : espectaculos) {
@@ -820,7 +831,6 @@ public class VPrincipal_MySQL {
         }
         listaEspectaculos.setModel(model);
     }
-
     private void cargar_combobox_responsables() {
         // Carga de los empleados en un model de combobox para seleccionar el responsable, luefo le paso el modelo al objeto comboBox de la ventana
         DefaultComboBoxModel<String> empleModel = new DefaultComboBoxModel<>();
@@ -831,7 +841,6 @@ public class VPrincipal_MySQL {
         }
         comboBoxEmpleados.setModel(empleModel);
     }
-
     private void cargar_combobox_espectaculosClientes() {
         // Carga de los clientes en un model de combobox para seleccionar el responsable, luefo le paso el modelo al objeto comboBox de la ventana
         DefaultComboBoxModel<Espectaculo> espectaculoModel = new DefaultComboBoxModel<>();
@@ -844,7 +853,6 @@ public class VPrincipal_MySQL {
         comboBoxEspectaculos.setModel(espectaculoModel);
         comboBoxEspectaculos2.setModel((espectaculoModel));
     }
-
     private void cargar_j_list_jtable_espectaculosClientes() {
         // Jlist clientes Jtable espectaculos
         DefaultListModel<Cliente> modelClienteEspectaculo = new DefaultListModel<>();
@@ -866,7 +874,6 @@ public class VPrincipal_MySQL {
             }
         });
     }
-
     private void cargar_j_list_jtable_espectaculosEmpleados() {
         // Jlist empleados Jtable espectaculos
         DefaultListModel<Empleado> modelEmpleadoEspectaculo = new DefaultListModel<>();
@@ -890,8 +897,46 @@ public class VPrincipal_MySQL {
             }
         });
     }
+    public void actualizarClientes() {
+        Cliente cliente = list_clientes.getSelectedValue();
 
+        if (cliente != null) {
+            campo_dni.setText(cliente.getDni());
+            campo_nombre.setText(cliente.getNombre());
+            campo_apellido.setText(cliente.getApellidos());
+            campo_edad.setText(String.valueOf(cliente.getEdad()));
+        }
+    }
+    public void actualizarEmpleados() {
+        Empleado empleado = listaEmpleados.getSelectedValue();
 
+        if (empleado != null) {
+            et_dniEmp.setText(empleado.getDniEmple());
+            et_nombre.setText(empleado.getNombreEmple());
+            et_apeEmple.setText(empleado.getApeEmple());
+            et_NacEmp.setText(String.valueOf(empleado.getFechaNac()));
+            et_fechaContrEmp.setText(String.valueOf(empleado.getFechaContr()));
+            et_NacioEmpl.setText(String.valueOf(empleado.getNacionalidad()));
+            et_CargoEmpl.setText(String.valueOf(empleado.getCargo()));
+        }
+    }
+    public void actualizarEspectaculos() {
+        Espectaculo espectaculo = listaEspectaculos.getSelectedValue();
+
+        if (espectaculo != null) {
+            et_ID_Espec.setText(String.valueOf(espectaculo.getNo_Espect()));
+            et_Espectaculo.setText(espectaculo.getNombreEspec());
+            et_aforo.setText(String.valueOf(espectaculo.getAforo()));
+            et_Descripcion.setText(espectaculo.getDescripcion());
+            et_lugar.setText(espectaculo.getLugar());
+            et_fecha.setText(String.valueOf(espectaculo.getFecha_Espec()));
+            et_horario.setText(String.valueOf(espectaculo.getHorario_espec()));
+            et_precio.setText(String.valueOf(espectaculo.getPrecio()));
+            comboBoxEmpleados.setSelectedItem(espectaculo.getResponsable());
+        }
+    }
+
+    //Funciones para comprobar si los datos añadidos son del formato adecuado
     private boolean numeroCorrecto(String numero) {
         boolean correcto = true;
         try {
@@ -905,7 +950,6 @@ public class VPrincipal_MySQL {
 
         return correcto;
     }
-
     public static String comprobarDNIcliente(ArrayList<Cliente> clientes, String campo_dni) {
         String nombreRepe = "";
         for (Cliente cliente : clientes) {
@@ -915,7 +959,6 @@ public class VPrincipal_MySQL {
         }
         return nombreRepe;
     }
-
     public static String comprobarDNIempleado(ArrayList<Empleado> empleados, String et_dniEmp) {
         String nombreRepe = "";
         for (Empleado empleado : empleados) {
@@ -925,7 +968,6 @@ public class VPrincipal_MySQL {
         }
         return nombreRepe;
     }
-
     private boolean formatoMinutosSegundos(String duracion) {
         boolean correcto = false;
         String regexp = "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$"; // formato 'MMM:ss' ó 'MM:ss' ó 'M:ss'
@@ -940,7 +982,6 @@ public class VPrincipal_MySQL {
 
         return correcto;
     }
-
     private boolean formatoFecha(String fecha) {
         boolean correcto = false;
         String regexp = "^\\d{4}\\-(0[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])$";
@@ -954,7 +995,6 @@ public class VPrincipal_MySQL {
 
         return correcto;
     }
-
     private boolean validarDNI(String dni) {
         String letraMayuscula = ""; //Guardaremos la letra introducida en formato mayúscula
 
@@ -975,7 +1015,6 @@ public class VPrincipal_MySQL {
             return false;
         }
     }
-
     private boolean soloNumeros(String dni) {
 
         int i, j = 0;
@@ -999,7 +1038,6 @@ public class VPrincipal_MySQL {
             return true;
         }
     }
-
     private String letraDNI(String dni) {
         // El método es privado porque lo voy a usar internamente en esta clase, no se necesita fuera de ella
 
@@ -1017,36 +1055,11 @@ public class VPrincipal_MySQL {
     }
 
 
-    /*
-
-    public void cargar_j_list_jtable_espectaculosEmpleados() {
-
-
-
-        tabla2 = new JTable();
-        tabla2.setModel(new ListaEmpleadosEspectaculosModel(new Empleado()));
-        resultadoEmpleadosEspectaculos.setViewportView(tabla2);
-
-        listaEmpleadosEspectaculos.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-
-                tabla2.setModel(new ListaEmpleadosEspectaculosModel(listaEmpleadosEspectaculos.getSelectedValue()));
-
-
-            }
-        });
+    public JPanel getVPanelPrincipal() {
+        return VPanelPrincipal;
     }
 
-    public void actualizarJTable() {
-        ArrayList<Espectaculo> espectaculos;
-        espectaculos = new Carga().listaEspectaculos();
-
-        JtableModel modelo = new JtableModel(espectaculos);
-        //tabla.setModel(modelo);
-    }
-*/
-
+    //Funciones de comprobar y limpiar campos
     private void limpiarCampos() {
 
         campo_edad.setText("");
@@ -1076,52 +1089,6 @@ public class VPrincipal_MySQL {
 
 
     }
-
-    public void actualizarClientes() {
-        Cliente cliente = list_clientes.getSelectedValue();
-
-        if (cliente != null) {
-            campo_dni.setText(cliente.getDni());
-            campo_nombre.setText(cliente.getNombre());
-            campo_apellido.setText(cliente.getApellidos());
-            campo_edad.setText(String.valueOf(cliente.getEdad()));
-        }
-    }
-
-    public void actualizarEmpleados() {
-        Empleado empleado = listaEmpleados.getSelectedValue();
-
-        if (empleado != null) {
-            et_dniEmp.setText(empleado.getDniEmple());
-            et_nombre.setText(empleado.getNombreEmple());
-            et_apeEmple.setText(empleado.getApeEmple());
-            et_NacEmp.setText(String.valueOf(empleado.getFechaNac()));
-            et_fechaContrEmp.setText(String.valueOf(empleado.getFechaContr()));
-            et_NacioEmpl.setText(String.valueOf(empleado.getNacionalidad()));
-            et_CargoEmpl.setText(String.valueOf(empleado.getCargo()));
-        }
-    }
-
-    public void actualizarEspectaculos() {
-        Espectaculo espectaculo = listaEspectaculos.getSelectedValue();
-
-        if (espectaculo != null) {
-            et_ID_Espec.setText(String.valueOf(espectaculo.getNo_Espect()));
-            et_Espectaculo.setText(espectaculo.getNombreEspec());
-            et_aforo.setText(String.valueOf(espectaculo.getAforo()));
-            et_Descripcion.setText(espectaculo.getDescripcion());
-            et_lugar.setText(espectaculo.getLugar());
-            et_fecha.setText(String.valueOf(espectaculo.getFecha_Espec()));
-            et_horario.setText(String.valueOf(espectaculo.getHorario_espec()));
-            et_precio.setText(String.valueOf(espectaculo.getPrecio()));
-            comboBoxEmpleados.setSelectedItem(espectaculo.getResponsable());
-        }
-    }
-
-    public JPanel getVPanelPrincipal() {
-        return VPanelPrincipal;
-    }
-
     private boolean comprobarCamposVacios() {
 
         boolean hayDato = true;
@@ -1138,15 +1105,17 @@ public class VPrincipal_MySQL {
         }
         return hayDato;
     }
-
     private boolean comprobarCamposVaciosEmpleados() {
 
         boolean hayDato = true;
         ArrayList<JTextField> campos = new ArrayList<>();
-        campos.add(campo_dni);
-        campos.add(campo_nombre);
-        campos.add(campo_apellido);
-        campos.add(campo_edad);
+        campos.add(et_dniEmp);
+        campos.add(et_emple);
+        campos.add(et_apeEmple);
+        campos.add(et_NacEmp);
+        campos.add(et_fechaContrEmp);
+        campos.add(et_NacioEmpl);
+        campos.add(et_CargoEmpl);
 
         for (JTextField campo : campos) {
             if (campo.getText().equalsIgnoreCase("")) {
@@ -1155,7 +1124,6 @@ public class VPrincipal_MySQL {
         }
         return hayDato;
     }
-
     private boolean comprobarCamposVaciosEspectaculos() {
 
         boolean hayDato = true;
@@ -1177,6 +1145,7 @@ public class VPrincipal_MySQL {
         return hayDato;
     }
 
+    //Funcion de panel de mensaje personalizado
     public void panelMensajePersonalizado(String titulo, String mensaje, int tipo) {
         JButton okButton = new JButton("OK");
         okButton.setFocusPainted(false);
@@ -1187,7 +1156,5 @@ public class VPrincipal_MySQL {
         dialog.setVisible(true);
     }
 
-/*    private void createUIComponents() {
-        // TODO: place custom component creation code here
-    }*/
+
 }

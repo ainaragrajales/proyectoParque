@@ -166,8 +166,9 @@ public class EspectaculoSQLite {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof EspectaculoSQLite espectaculoSQLite)) return false;
-        return no_Espect == espectaculoSQLite.no_Espect && aforo == espectaculoSQLite.aforo && Double.compare(espectaculoSQLite.precio, precio) == 0 && Objects.equals(nombreEspec, espectaculoSQLite.nombreEspec) && Objects.equals(descripcion, espectaculoSQLite.descripcion) && Objects.equals(lugar, espectaculoSQLite.lugar) && Objects.equals(fecha_Espec, espectaculoSQLite.fecha_Espec) && Objects.equals(horario_espec, espectaculoSQLite.horario_espec) && Objects.equals(responsable, espectaculoSQLite.responsable) && Objects.equals(clientes, espectaculoSQLite.clientes) && Objects.equals(empleadosSQLite, espectaculoSQLite.empleadosSQLite);
+        if (o == null || getClass() != o.getClass()) return false;
+        EspectaculoSQLite that = (EspectaculoSQLite) o;
+        return no_Espect == that.no_Espect && aforo == that.aforo && Double.compare(that.precio, precio) == 0 && Objects.equals(nombreEspec, that.nombreEspec) && Objects.equals(descripcion, that.descripcion) && Objects.equals(lugar, that.lugar) && Objects.equals(fecha_Espec, that.fecha_Espec) && Objects.equals(horario_espec, that.horario_espec) && Objects.equals(responsable, that.responsable) && Objects.equals(clientes, that.clientes) && Objects.equals(empleadosSQLite, that.empleadosSQLite);
     }
 
     @Override

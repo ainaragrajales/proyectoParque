@@ -11,19 +11,22 @@ import java.util.ArrayList;
 
 
 public class Carga {
+public static final String driver = "com.mysql.jdbc.Driver";
+public static final String url = "jdbc:mysql://localhost/parqueMySQL";
+public static final String log_user = "root";
+public static final String passwd = "several975:burn:month:War";
 
     //Cargar desde la base de datos las listas de espectaculos, empleados, clientes, clienteEspectaculos, empleadoEspectaculos
     public ArrayList<Espectaculo> listaEspectaculos() {
 
         ArrayList<Espectaculo> espectaculos = new ArrayList<>();
-        String sql = "SELECT * FROM espectaculos";
 
         try {
             //Cargar el driver
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName(driver);
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL", "root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection(url, log_user, passwd);
 
 
             Statement sentencia = (Statement) conexion.createStatement();
@@ -261,16 +264,16 @@ public class Carga {
         return espectaculosEmpleados;
     }
 
-    /*public ArrayList<Usuario> listaUsuarios(){
+    public ArrayList<Usuario> listaUsuarios(){
         ArrayList<Usuario> usuarios = new ArrayList<>();
         String sql = "SELECT * FROM usuarios";
 
         try {
             //Cargar el driver
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName(driver);
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost/parqueMySQL", "root", "several975:burn:month:War");
+            Connection conexion = (Connection) DriverManager.getConnection(url, log_user, passwd);
 
 
             Statement sentencia = (Statement) conexion.createStatement();
@@ -302,7 +305,7 @@ public class Carga {
         }
 
         return usuarios;
-    }*/
+    }
 
 
     //Funciones para añadir, modificar y eliminar Clientes
@@ -873,17 +876,18 @@ public class Carga {
         return info;
     }
 
-    /*public String mirarPassword(String usuario){
+    //Funciones usuarios
+    public String mirarPassword(String usuario){
         String sql = "select contrasena from usuarios where usuario=?";
         String password = "";
         Usuario user = new Usuario(usuario,password);
 
         try {
             //Cargar el driver
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName(driver);
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/Juanan", "root", "damnoc1819");
+            Connection conexion = (Connection) DriverManager.getConnection(url, log_user, passwd);
 
             Statement sentencia = (Statement) conexion.createStatement();
 
@@ -913,16 +917,16 @@ public class Carga {
 
         // La función me devuelve el ArrayList de espectaculos
         return user.getPassword();
-    }*/
-    /*public void crearUsuarioNuevo(Usuario usuario){
+    }
+    public void crearUsuarioNuevo(Usuario usuario){
         PreparedStatement ps;
         String sql;
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName(driver);
 
             //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
-            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/Juanan", "root", "damnoc1819");
+            Connection conexion = (Connection) DriverManager.getConnection(url, log_user, passwd);
 
 
             Statement sentencia = (Statement) conexion.createStatement();
@@ -944,5 +948,5 @@ public class Carga {
         } catch (SQLException | ClassNotFoundException e) {
             JOptionPane.showMessageDialog(null, "Error" + e.getMessage());
         }
-    }*/
+    }
 }

@@ -1,10 +1,6 @@
-import Models.*;
-import MySQL.Carga;
-import org.apache.commons.codec.digest.DigestUtils;
-
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
+
 
 public class VInicio {
 
@@ -22,34 +18,23 @@ public class VInicio {
 
     public VInicio() {
 
-        String encript = DigestUtils.sha256Hex("1234");
-        System.out.println(encript);
-
         //Botón de acceso a la base de datos de MySQL
         MySqlButton.addActionListener(e -> {
 
-                frameMySQL.setContentPane((new VPrincipal_MySQL()).VPanelPrincipal);
-                frameMySQL.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-                frameMySQL.setMinimumSize(new Dimension(1200, 600)); // Lo ajusto a un tamaño para que se vea bien
-                frameMySQL.setLocationRelativeTo(null); // Saca la ventana al centro
-                frameMySQL.pack();
-                frameMySQL.setVisible(true);
+           if (!VAccesoMySQL.estasConectado) {
 
-           /*
-           if (!VAccesoMySql.estasConectado) {
-
-                frame.setContentPane((new VAccesoMySql()).getVAccesoMySql());
-                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Cierra la ventana pero no el programa
-                frame.setMinimumSize(new Dimension(400, 200)); // Lo ajusto a un tamaño para que se vea bien
-                frame.setLocationRelativeTo(null); // Saca la ventana al centro
-                frame.pack();
-                frame.setVisible(true);
+               frameMySQL.setContentPane((new VAccesoMySQL()).getVAccesoMySQL());
+               frameMySQL.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Cierra la ventana pero no el programa
+               frameMySQL.setMinimumSize(new Dimension(400, 200)); // Lo ajusto a un tamaño para que se vea bien
+               frameMySQL.setLocationRelativeTo(null); // Saca la ventana al centro
+               frameMySQL.pack();
+               frameMySQL.setVisible(true);
 
 
             } else {
                 JOptionPane.showMessageDialog(null, "Ya estás conectado !!");
             }
-            */
+
         });
         //Botón de acceso a la base de datos de DB4o
         DB4oButton.addActionListener(e -> {
@@ -67,13 +52,19 @@ public class VInicio {
         //Botón de acceso a la base de datos de SQLite
         SQLiteButton.addActionListener(e -> {
 
-                //JFrame frame = new JFrame("Parque SQLite");
-                frameSQLite.setContentPane((new VPrincipal_SQLite()).getVPanelPrincipal());
-                frameSQLite.setMinimumSize(new Dimension(1200, 600)); // Lo ajusto a un tamaño para que se vea bien
+            if (!VAccesoSQLite.estasConectado) {
+
+                frameSQLite.setContentPane((new VAccesoSQLite()).getVAccesoSQLite());
+                frameSQLite.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Cierra la ventana pero no el programa
+                frameSQLite.setMinimumSize(new Dimension(400, 200)); // Lo ajusto a un tamaño para que se vea bien
                 frameSQLite.setLocationRelativeTo(null); // Saca la ventana al centro
                 frameSQLite.pack();
                 frameSQLite.setVisible(true);
-                frameSQLite.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
+
+            } else {
+                JOptionPane.showMessageDialog(null, "Ya estás conectado !!");
+            }
 
         });
     }
@@ -85,7 +76,6 @@ public class VInicio {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setMinimumSize(new Dimension(300, 300));
         frame.setLocation(50, 50); // Posiciono la ventana es la esquina superior izquierda, para que no estorbe a otras ventanas
-        //frame.setLocationRelativeTo(null); // Saca la ventana al centro
         frame.pack();
         frame.setVisible(true);
     }

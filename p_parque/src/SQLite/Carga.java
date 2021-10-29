@@ -8,6 +8,9 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class Carga {
+    public static final String driver = "org.sqlite.JDBC";
+    public static final String url = "jdbc:sqlite:parqueSQLite.db";
+
 
     //Cargar desde la base de datos las listas de espectaculos, empleados, clientes, clienteEspectaculos, empleadoEspectaculos
     public ArrayList<Cliente> listaClientesSQLite() {
@@ -15,9 +18,9 @@ public class Carga {
 
 
         try {
-            Class.forName("org.sqlite.JDBC");
+            Class.forName(driver);
 
-            Connection conexion = DriverManager.getConnection("jdbc:sqlite:parqueSQLite.db");
+            Connection conexion = DriverManager.getConnection(url);
 
             Statement sentencia = conexion.createStatement();
 
@@ -229,6 +232,44 @@ public class Carga {
         }
 
         return espectaculosEmpleados;
+    }
+
+    public ArrayList<Usuario> listaUsuarios(){
+        ArrayList<Usuario> usuarios = new ArrayList<>();
+        String sql = "SELECT * FROM usuarios";
+        try {
+            Class.forName(driver);
+
+            Connection conexion = DriverManager.getConnection(url);
+
+            Statement sentencia = conexion.createStatement();
+            // hace la consulta
+            ResultSet resul = sentencia.executeQuery(sql);
+
+            while (resul.next()) {
+                // Creo un objeto 'espectaculo' vacío
+                Usuario usuario = new Usuario();
+
+                // voy pasáandole los atributos al objeto 'espectaculo'
+                usuario.setIdPass(resul.getInt(1));
+                usuario.setUsuario(resul.getString(2));
+                usuario.setPassword(resul.getString(3));
+
+
+                // Añado el objeto 'espectaculo' al ArrayList espectaculos
+                usuarios.add(usuario);
+            }
+
+            // Cerrar ResultSet
+            resul.close();
+            // Cerrar Statement
+            sentencia.close();
+            //conexion.close();
+
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+        return usuarios;
     }
 
     //Funciones para añadir, modificar y eliminar Clientes
@@ -754,4 +795,77 @@ public class Carga {
         return info;
     }
 
+    //Funciones usuarios
+    public String mirarPassword(String usuario){
+        String sql = "select contrasena from usuarios where usuario=?";
+        String password = "";
+        Usuario user = new Usuario(usuario,password);
+
+        try {
+            //Cargar el driver
+            Class.forName(driver);
+
+            //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
+            Connection conexion = DriverManager.getConnection(url);
+
+            Statement sentencia = conexion.createStatement();
+
+            // hace la consulta
+            ResultSet resul = sentencia.executeQuery("select contrasena from usuarios where usuario='"+usuario+"'");
+
+            while (resul.next()) {
+
+                // Creo un objeto 'Usuario' con el usuario que me pasan por parámetro de entrada
+                // voy pasándole los atributos al objeto 'espectaculo'
+                user.setPassword(resul.getString(1));
+
+            }
+            //System.out.println("User: "+user);
+
+            // Cerrar ResultSet
+            resul.close();
+            // Cerrar Statement
+            sentencia.close();
+            // Cerrar conexion
+            conexion.close();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            // hacer algo con la excepcion
+        }
+
+
+        // La función me devuelve el ArrayList de espectaculos
+        return user.getPassword();
+    }
+    public void crearUsuarioNuevo(Usuario usuario){
+        PreparedStatement ps;
+        String sql;
+
+        try {
+            Class.forName(driver);
+
+            //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/dam3?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=EET", "elena", "elena123321");
+            Connection conexion =  DriverManager.getConnection(url);
+
+
+            Statement sentencia =  conexion.createStatement();
+
+            sql = "insert into usuarios (usuario,contrasena) values (?,?)";
+
+            ps = conexion.prepareStatement(sql);
+            ps.setString(1, usuario.getUsuario());
+            ps.setString(2, usuario.getPassword());
+
+
+            ps.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Se han insertado los datos");
+
+            sentencia.close();
+            conexion.close();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Error" + e.getMessage());
+        }
+    }
 }
